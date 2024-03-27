@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+
+  gateway-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/bet?allowPublicKeyRetrieval=true&useSSL=false
+    ports:
+      - "8080:8080"
+    networks:
+      - gateway-network
+    depends_on:
+      - mysql-gateway
+
+
+  mysql-gateway:
+    image: mysql:5.7
+    restart: always #
+    ports:
+      - "3306:3306"
+    networks:
+      - gateway-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=Abc@123456789
+      - MYSQL_DATABASE=users
+    volumes:
+      - mysql57-volume:/var/lib/mysql
+#    expose:
+#        - 3306
+
+volumes:
+  mysql57-volume:
+networks:
+    gateway-network:
+        driver: bridge

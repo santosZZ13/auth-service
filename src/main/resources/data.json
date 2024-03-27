@@ -1,0 +1,299 @@
+[
+    {
+        "league": "Tercera Division",
+        "date": "8:00 PM Sunday, October 8, 2023",
+        "home": "Marino",
+        "away": "UD Tamaraceite",
+        "link": "https://www.aiscore.com/match-ud-tamaraceite-marino/l6kegiwvm0gcv75/h2h",
+        "h2hHistory": [
+            {
+
+                "time": "Sunday, October 8, 2023",
+                "home": "Marino",
+                "away": "UD Tamaraceite",
+                "ht": [
+                    0,
+                    1
+                ],
+                "ft": [
+                    0,
+                    1
+                ]
+            },
+            {
+                "time": "Sunday, April 2, 2023",
+                "home": "Marino",
+                "away": "UD Tamaraceite",
+                "ht": [
+                    1,
+                    0
+                ],
+                "ft": [
+                    1,
+                    1
+                ]
+            },
+            {
+                "time": "Tuesday, December 6, 2022",
+                "home": "UD Tamaraceite",
+                "away": "Marino",
+                "ht": [
+                    0,
+                    0
+                ],
+                "ft": [
+                    0,
+                    0
+                ]
+            },
+            {
+                "time": "Saturday, December 3, 2022",
+                "home": "UD Tamaraceite",
+                "away": "Marino",
+                "ht": [
+                    0,
+                    "0"
+                ],
+                "ft": [
+                    1,
+                    1
+                ]
+            },
+            {
+                "time": "Sunday, February 7, 2021",
+                "home": "UD Tamaraceite",
+                "away": "Marino",
+                "ht": [
+                    1,
+                    "0"
+                ],
+                "ft": [
+                    2,
+                    1
+                ]
+            },
+            {
+                "time": "Sunday, November 8, 2020",
+                "home": "Marino",
+                "away": "UD Tamaraceite",
+                "ht": [
+                    0,
+                    "0"
+                ],
+                "ft": [
+                    0,
+                    0
+                ]
+            }
+        ]
+    },
+    {
+        "league": "Viet Nam",
+        "date": "8:00 PM Sunday, October 8, 2023",
+        "home": "Partizan Belgrade",
+        "away": "Radnik Surdulica",
+        "link": "https://www.aiscore.com/match-radnik-surdulica-partizan-belgrade/o07dnimjlm4tmkn/h2h",
+        "h2hHistory": [
+            {
+                "time": "Monday, September 18, 2023",
+                "home": "Partizan Belgrade",
+                "away": "Radnik Surdulica",
+                "ht": [
+                    0,
+                    2
+                ],
+                "ft": [
+                    3,
+                    2
+                ]
+            },
+            {
+                "time": "Friday, March 17, 2023",
+                "home": "Partizan Belgrade",
+                "away": "Radnik Surdulica",
+                "ht": [
+                    0,
+                    2
+                ],
+                "ft": [
+                    1,
+                    2
+                ]
+            },
+            {
+                "time": "Monday, September 19, 2022",
+                "home": "Radnik Surdulica",
+                "away": "Partizan Belgrade",
+                "ht": [
+                    0,
+                    1
+                ],
+                "ft": [
+                    0,
+                    2
+                ]
+            },
+            {
+                "time": "Monday, March 21, 2022",
+                "home": "Radnik Surdulica",
+                "away": "Partizan Belgrade",
+                "ht": [
+                    1,
+                    "1"
+                ],
+                "ft": [
+                    "1",
+                    "2"
+                ]
+            },
+            {
+                "time": "Sunday, October 17, 2021",
+                "home": "Partizan Belgrade",
+                "away": "Radnik Surdulica",
+                "ht": [
+                    "1",
+                    "0"
+                ],
+                "ft": [
+                    "2",
+                    "0"
+                ]
+            },
+            {
+                "time": "Sunday, February 21, 2021",
+                "home": "Partizan Belgrade",
+                "away": "Radnik Surdulica",
+                "ht": [
+                    "1",
+                    "0"
+                ],
+                "ft": [
+                    "3",
+                    "0"
+                ]
+            }
+        ]
+    },
+    {
+        "league": "Premier league",
+        "date": "8:00 PM Sunday, October 8, 2023",
+        "home": "Siauliai",
+        "away": "Radnik Surdulica",
+        "link": "https://www.aiscore.com/match-metta-lu-riga-siauliai/zrkn6iv2w33bwql/h2h",
+        "h2hHistory": [
+            {
+                "time": "Saturday, March 25, 2023",
+                "home": "Siauliai",
+                "away": "Radnik Surdulica",
+                "ht": [
+                    "0",
+                    "0"
+                ],
+                "ft": [
+                    "0",
+                    "2"
+                ]
+            },
+            {
+                "time": "Saturday, February 4, 2023",
+                "home": "Metta/LU Riga",
+                "away": "Siauliai",
+                "ht": [
+                    "0",
+                    "0"
+                ],
+                "ft": [
+                    "2",
+                    "4"
+                ]
+            }
+        ]
+    },
+    {
+        "league": "Burundi",
+        "date": "8:00 PM Sunday, October 8, 2023",
+        "home": "Volna Pinsk",
+        "away": "Slavia Mozyr",
+        "link": "https://www.aiscore.com/match-slavia-mozyr-volna-pinsk/g6763i60832ho7r/h2h",
+        "h2hHistory": [
+            {
+                "time": "Tuesday, June 22, 2021",
+                "home": "Volna Pinsk",
+                "away": "Slavia Mozyr",
+                "ht": [
+                    "0",
+                    "1"
+                ],
+                "ft": [
+                    "0",
+                    "1"
+                ]
+            },
+            {
+                "time": "Saturday, August 29, 2020",
+                "home": "Volna Pinsk",
+                "away": "Slavia Mozyr",
+                "ht": [
+                    "0",
+                    "2"
+                ],
+                "ft": [
+                    "0",
+                    "4"
+                ]
+            },
+            {
+                "time": "Saturday, September 15, 2018",
+                "home": "Slavia Mozyr",
+                "away": "Volna Pinsk",
+                "ht": [
+                    "1",
+                    "0"
+                ],
+                "ft": [
+                    "2",
+                    "0"
+                ]
+            },
+            {
+                "time": "Sunday, May 20, 2018",
+                "home": "Volna Pinsk",
+                "away": "Slavia Mozyr",
+                "ht": [
+                    "0",
+                    "0"
+                ],
+                "ft": [
+                    "0",
+                    "1"
+                ]
+            },
+            {
+                "time": "Wednesday, February 20, 2019",
+                "home": "Slavia Mozyr",
+                "away": "Volna Pinsk",
+                "ht": [
+                    "3",
+                    "0"
+                ],
+                "ft": [
+                    "5",
+                    "0"
+                ]
+            },
+            {
+                "time": "Thursday, February 18, 2016",
+                "home": "Volna Pinsk",
+                "away": "Slavia Mozyr",
+                "ht": [
+                    "1",
+                    "1"
+                ],
+                "ft": [
+                    "2",
+                    "3"
+                ]
+            }
+        ]
+    }
+]

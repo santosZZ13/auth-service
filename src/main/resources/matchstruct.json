@@ -1,0 +1,59 @@
+{
+    "league": "Premier League",
+    "date": "2018-10-17T00:00:00Z",
+    "home": "Manchester United",
+    "away": "Manchester City",
+    "odds": {
+        "1x2": [
+            4.5,
+            3.75,
+            1.8
+        ],
+        "ah": [
+            0.5,
+            1.5,
+            2.5
+        ],
+        "ou": {
+            "3.5": [
+                2.14,
+                1.81
+            ]
+        },
+        "corners": {
+            "ou": {
+                "10.5": [
+                    1.83,
+                    1.83
+                ]
+            }
+        }
+    },
+    "link": "https://www.bbc.co.uk/sport/football/45822224",
+    "history": [
+        {
+            "league": "Premier League",
+            "date": "2018-10-17T00:00:00Z",
+            "ht": [
+                0,
+                2
+            ],
+            "ft": [
+                0,
+                3
+            ]
+        },
+        {
+            "league": "Premier League",
+            "date": "2017-12-10T00:00:00Z",
+            "ht": [
+                1,
+                1
+            ],
+            "ft": [
+                1,
+                2
+            ]
+        }
+    ]
+}
