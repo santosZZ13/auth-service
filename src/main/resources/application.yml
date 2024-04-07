@@ -34,29 +34,29 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
     generate-ddl: true
 
+# Redis Configuration
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 10
+        time-between-eviction-runs: 10000
+        max-wait: 10000
+    user_expiration_second: 2400
+    access_token_expiration_second: 1800
+    refresh_token_expiration_second: 3600
+    activate_token_expiration_second: 86400
+    default_expiration_second: 1200
+
+
   sql:
     init:
       platform: mysql
       mode: always
-
-  redis:
-    host: localhost
-    port: 6379
-    client-name: redis
-#    password: 123456
-#    jedis:
-#      pool:
-#        max-active: 8
-#        max-idle: 8
-#        min-idle: 0
-#        max-wait: -1
-#        enabled: true
-#    lettuce:
-#      pool:
-#        max-wait: -1
-
-
-
 
 # API Gateway Configuration
 api-gateway:
