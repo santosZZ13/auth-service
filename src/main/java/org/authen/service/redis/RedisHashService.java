@@ -1,6 +1,6 @@
 package org.authen.service.redis;
 
-public interface RedisHashService extends RedisBaseService {
-	default void hashSet(String key, String hashKey, Object hashValue) {}
-	default boolean hashExists(String key, String hashKey){return false;}
+public interface RedisHashService<K, V> extends RedisBaseService<K, V> {
+	default void hashSet(K key, V hashKey, Object hashValue) {}
+	default boolean hashExists(K key, V hashKey) {return false;}
 }
