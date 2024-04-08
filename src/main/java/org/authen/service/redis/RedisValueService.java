@@ -279,5 +279,27 @@ public interface RedisValueService<K, V> extends RedisBaseService<K, V> {
 		return null;
 	}
 
+	/**
+	 * Overwrite parts of {@code key} starting at the specified {@code offset} with given {@code value}.
+	 *
+	 * @param key must not be {@literal null}.
+	 * @param value
+	 * @param offset
+	 * @see <a href="https://redis.io/commands/setrange">Redis Documentation: SETRANGE</a>
+	 */
+	default void set(K key, V value, long offset) {};
+
+	/**
+	 * Get the length of the value stored at {@code key}.
+	 *
+	 * @param key must not be {@literal null}.
+	 * @return {@literal null} when used in pipeline / transaction.
+	 * @see <a href="https://redis.io/commands/strlen">Redis Documentation: STRLEN</a>
+	 */
+	default Long size(K key) {
+		return null;
+	};
+
+
 
 }
