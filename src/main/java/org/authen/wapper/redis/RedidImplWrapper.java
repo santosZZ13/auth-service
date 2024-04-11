@@ -1,6 +1,7 @@
-package org.authen.service.redis;
+package org.authen.wapper.redis;
 
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -12,17 +13,18 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 //@AllArgsConstructor
-public class RedisServiceImpl implements RedisImpl<String, Object> {
+public class RedidImplWrapper implements RedisWrapper<String, Object> {
 
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final ValueOperations<String, Object> valueOperations;
 	private final HashOperations<String, String, Object> hashOperations;
+	private final ListOperations<String, Object> listOperations;
 
-	public RedisServiceImpl(RedisTemplate<String, Object> redisTemplate) {
+	public RedidImplWrapper(RedisTemplate<String, Object> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 		this.hashOperations = redisTemplate.opsForHash();
 		this.valueOperations = redisTemplate.opsForValue();
-
+		this.listOperations = redisTemplate.opsForList();
 	}
 
 

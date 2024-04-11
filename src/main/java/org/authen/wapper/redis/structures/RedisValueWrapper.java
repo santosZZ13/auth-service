@@ -1,5 +1,6 @@
-package org.authen.service.redis;
+package org.authen.wapper.redis.structures;
 
+import org.authen.wapper.redis.RedisBaseWrapper;
 import org.springframework.data.redis.core.TimeoutUtils;
 
 import java.time.Duration;
@@ -9,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public interface RedisValueService<K, V> extends RedisBaseService<K, V> {
+public interface RedisValueWrapper<K, V> extends RedisBaseWrapper<K, V> {
 
 	/**
 	 * Set the value of the key
