@@ -23,7 +23,7 @@ public class TestRedis implements CommandLineRunner {
 //		customer.addAccount(new Account(3L, "1234567892", 6000));
 //		customer = repository.save(customer);
 //		System.out.println("Customer saved: " + customer);
-		List<Customer> byAccountsId = repository.findByAccountsId(1L);
-		System.out.println();
+//		List<Customer> byAccountsId = repository.findByAccountsId(1L);
+//		System.out.println();
 	}
 }

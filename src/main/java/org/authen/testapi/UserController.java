@@ -12,11 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
 
-	private final UserJpaRepository userTestRepository;
+	private final UserService userService;
 
 	@GetMapping("/api/test/users")
 	public List<UserEntity> getAllUsers() {
-		return userTestRepository.findAll();
+		return userService.getAllUsers();
 	}
 
 	@GetMapping("/api/public/users")
