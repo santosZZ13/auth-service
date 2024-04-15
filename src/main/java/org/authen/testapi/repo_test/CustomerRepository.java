@@ -1,6 +1,6 @@
-package org.authen.testapi;
+package org.authen.testapi.repo_test;
 
-import org.authen.testapi.modeltest.Customer;
+import org.authen.testapi.model_test.Customer;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.CrudRepository;
 

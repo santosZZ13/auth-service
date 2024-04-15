@@ -1,4 +1,4 @@
-package org.authen.testapi.modeltest;
+package org.authen.testapi.model_test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
