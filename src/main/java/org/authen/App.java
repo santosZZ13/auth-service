@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.authen.model.entity.UserEntity;
+import org.authen.repo.UserJpaRepository;
 import org.authen.testapi.model_test.Role;
 import org.authen.testapi.model_test.User;
 import org.authen.testapi.repo_test.RoleRepository;
@@ -11,6 +13,8 @@ import org.authen.testapi.repo_test.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,17 +28,23 @@ import java.util.List;
 @AllArgsConstructor
 @Log4j2
 @RestController
+@EnableCaching
 public class App implements CommandLineRunner {
 
 	private final RoleRepository roleRepository;
 	private final UserRepository userRepository;
-
+	private final UserJpaRepository userJpaRepository;
 
 	@GetMapping("/api/public/users")
 	public Iterable<User> getAllUsers() {
 		return userRepository.findAll();
 	}
 
+	@GetMapping("/api/public/users/jpa")
+	@Cacheable("users")
+	public List<UserEntity> getAllUsersJpa() {
+		return userJpaRepository.findAll();
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(App.class, args);
