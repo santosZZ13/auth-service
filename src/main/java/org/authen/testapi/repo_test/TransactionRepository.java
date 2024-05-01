@@ -1,6 +1,6 @@
-package org.authen.testapi;
+package org.authen.testapi.repo_test;
 
-import org.authen.testapi.modeltest.Transaction;
+import org.authen.testapi.model_test.Transaction;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

@@ -19,7 +19,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-@EnableCaching
 @Configuration
 public class RedisConfig {
 
@@ -75,7 +74,17 @@ public class RedisConfig {
 
 	@Bean
 	public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-		return RedisCacheManager.create(redisConnectionFactory);
+//		return RedisCacheManager.create(redisConnectionFactory);
+
+		RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+				.disableCachingNullValues()
+//				.entryTtl(Duration.ofSeconds(10));
+				.prefixCacheNameWith(this.getClass().getPackageName() + ".");
+
+		return RedisCacheManager.builder(redisConnectionFactory)
+				.cacheDefaults(redisCacheConfiguration)
+				.transactionAware()
+				.build();
 	}
 
 	@Bean

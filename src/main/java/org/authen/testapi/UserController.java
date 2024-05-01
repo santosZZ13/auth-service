@@ -18,8 +18,4 @@ public class UserController {
 		return userService.getAllUsers();
 	}
 
-	@GetMapping("/api/public/users")
-	public String publicApis() {
-		return "public";
-	}
 }
