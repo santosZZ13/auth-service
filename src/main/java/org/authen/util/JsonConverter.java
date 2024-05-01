@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class JsonConverter {
@@ -20,8 +22,35 @@ public class JsonConverter {
 		}
 	}
 
+//
+//	public static <T> T fromJson(String json, Class<T> clazz) {
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		try {
+//			return objectMapper.readValue(json, clazz);
+//		} catch (IOException e) {
+//			throw new RuntimeException("Failed to convert JSON to object", e);
+//		}
+//	}
 
-	public static <T> T fromJson(String json, Class<T> clazz) {
+//	public static <T> List<T> fromJsonToList(String path, Class<T> clazz) {
+//		if (!new File(path).exists()) {
+//			throw new RuntimeException("File not found");
+//		}
+//
+//		if (Objects.isNull(clazz)) {
+//			throw new RuntimeException("Class is null");
+//		}
+//
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		try {
+//			return objectMapper.readValue(new File(path), objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+//		} catch (IOException e) {
+//			throw new RuntimeException("Failed to convert JSON to object", e);
+//		}
+//	}
+
+
+	public static <T> T convertJsonToObject(String json, Class<T> clazz) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			return objectMapper.readValue(json, clazz);
@@ -30,20 +59,14 @@ public class JsonConverter {
 		}
 	}
 
-	public static <T> List<T> fromJsonToList(String path, Class<T> clazz) {
-		if (!new File(path).exists()) {
-			throw new RuntimeException("File not found");
-		}
 
-		if (Objects.isNull(clazz)) {
-			throw new RuntimeException("Class is null");
-		}
-
+	public static String convertToJsonString(Object object) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			return objectMapper.readValue(new File(path), objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+			return objectMapper.writeValueAsString(object);
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to convert JSON to object", e);
+			throw new RuntimeException("Failed to convert object to JSON string", e);
 		}
 	}
+
 }

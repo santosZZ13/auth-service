@@ -1,7 +1,7 @@
 package org.authen.jwt;
 
 import io.jsonwebtoken.Claims;
-import org.authen.model.entity.UserEntity;
+import org.authen.persistence.model.UserEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 

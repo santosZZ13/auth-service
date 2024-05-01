@@ -1,0 +1,12 @@
+{
+    "register": {
+        "username": "john.s",
+        "password": "axCd2!43mn",
+        "email":"john@example.com",
+        "type":"local",
+        "role":"admin",
+        "locale":"en-us",
+        "firstname":"John",
+        "lastname":"Smith"
+    }
+}

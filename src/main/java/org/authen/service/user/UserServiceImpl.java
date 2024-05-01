@@ -2,8 +2,10 @@ package org.authen.service.user;
 
 import lombok.AllArgsConstructor;
 import org.authen.enums.AuthConstants;
-import org.authen.model.entity.UserEntity;
-import org.authen.repo.UserJpaRepository;
+import org.authen.persistence.dao.VerificationTokenRepository;
+import org.authen.persistence.model.UserEntity;
+import org.authen.persistence.dao.UserJpaRepository;
+import org.authen.persistence.model.VerificationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserDetailsService, UserService {
 
 	private final UserJpaRepository userJpaRepository;
+	private final VerificationTokenRepository tokenRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 
 	@Override
-	public boolean isUsernameExist(String username) {
+	public Boolean isUsernameExist(String username) {
 		return Objects.nonNull(this.findByUsername(username));
 	}
 
@@ -73,5 +76,26 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		return roles.stream()
 				.map(role -> new SimpleGrantedAuthority(AuthConstants.AUTHORITY_PREFIX + role))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void updateEnabledByUsername(Boolean aTrue, String username) {
+		userJpaRepository.updateEnabledByUsername(aTrue, username);
+	}
+
+	@Override
+	public void createVerificationTokenForUser(UserEntity user, String token) {
+		final VerificationToken myToken = new VerificationToken(token, user);
+		tokenRepository.save(myToken);
+	}
+
+	@Override
+	public VerificationToken getVerificationToken(String VerificationToken) {
+		return tokenRepository.findByToken(VerificationToken);
+	}
+
+	@Override
+	public VerificationToken  generateNewVerificationToken(String token) {
+		return null;
 	}
 }

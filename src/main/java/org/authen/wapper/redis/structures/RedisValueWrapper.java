@@ -1,6 +1,7 @@
 package org.authen.wapper.redis.structures;
 
 import org.authen.wapper.redis.RedisBaseWrapper;
+import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.TimeoutUtils;
 
 import java.time.Duration;
@@ -301,6 +302,19 @@ public interface RedisValueWrapper<K, V> extends RedisBaseWrapper<K, V> {
 		return null;
 	};
 
+	// TODO
+	default Boolean setBit(K key, long offset, boolean value) {
+		return null;
+	};
 
+	// TODO
+	default Boolean getBit(K key, long offset) {
+		return null;
+	}
+
+	// TODO
+	default List<Long> bitField(K key, BitFieldSubCommands subCommands) {
+		return null;
+	}
 
 }

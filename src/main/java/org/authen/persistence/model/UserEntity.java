@@ -1,4 +1,4 @@
-package org.authen.model.entity;
+package org.authen.persistence.model;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,6 +13,16 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity(name = "user")
 public class UserEntity extends UserBaseEntity implements Serializable {
+	@Column(name = "email")
+	private String email;
+	@Column(name = "type")
+	private String type;
+	@Column(name = "locate")
+	private String locate;
+	@Column(name = "first_name")
+	private String firstName;
+	@Column(name = "last_name")
+	private String lastName;
 	@Column(name = "created_at")
 	private Date createdAt;
 	@Column(name = "updated_at")

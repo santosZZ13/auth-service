@@ -1,4 +1,4 @@
-package org.authen.model.dto.login;
+package org.authen.dto.logout;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginResponseDTO {
-	private String accessToken;
-
-	private String refreshToken;
+public class LogoutResponseDTO {
+	private String message;
 }

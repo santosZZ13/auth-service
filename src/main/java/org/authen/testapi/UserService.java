@@ -1,10 +1,9 @@
 package org.authen.testapi;
 
 import lombok.AllArgsConstructor;
-import org.authen.model.entity.UserEntity;
-import org.authen.repo.UserJpaRepository;
+import org.authen.persistence.model.UserEntity;
+import org.authen.persistence.dao.UserJpaRepository;
 import org.authen.util.HashMapping;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ public class UserService {
 //	@Cacheable("users")
 	public List<UserEntity> getAllUsers() {
 		UserEntity build = UserEntity.builder()
-				.id("1")
+				.id(1L)
 				.username("user1")
 				.password("password1")
 				.role("role1")

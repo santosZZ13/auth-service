@@ -1,8 +1,7 @@
 package org.authen.testapi;
 
 import lombok.AllArgsConstructor;
-import org.authen.model.entity.UserEntity;
-import org.authen.repo.UserJpaRepository;
+import org.authen.persistence.model.UserEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
