@@ -12,6 +12,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "user")
+@Getter
+@Setter
 public class UserEntity extends UserBaseEntity implements Serializable {
 	@Column(name = "email")
 	private String email;

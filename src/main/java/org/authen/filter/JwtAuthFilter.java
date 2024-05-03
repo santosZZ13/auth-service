@@ -9,6 +9,7 @@ import org.authen.jwt.JwtTokenService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -38,6 +39,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			String token = null;
 			String userName = null;
 
+
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
 			// Check if the Authorization header is not null and starts with "Bearer "
 			if (authHeader != null && authHeader.startsWith("Bearer ")) {
 				token = authHeader.substring(7);
@@ -46,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 			if (Objects.isNull(token)) {
 				filterChain.doFilter(request, response);
-				return;
+//				return;
 			}
 
 			if (Objects.nonNull(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {

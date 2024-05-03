@@ -2,6 +2,7 @@ package org.authen.config;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.authen.filter.AfterAuthenticationSuccessHandler;
 import org.authen.filter.GatewayProperties;
 import org.authen.filter.JwtAuthFilter;
 import org.authen.service.user.UserServiceImpl;
@@ -30,11 +31,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableConfigurationProperties(BasicAuthProperties.class)
 public class SecurityConfig {
 
+	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
 	private final UserServiceImpl userServiceImpl;
 	private final GatewayProperties gatewayProperties;
 	private final BasicAuthProperties props;
 	private final JwtAuthFilter jwtAuthFilter;
-//	private final GatewayServletFilter gatewayServletFilter;
+	//	private final GatewayServletFilter gatewayServletFilter;
 //	private final CustomHeaderValidatorFilter customHeaderValidatorFilter;
 	public static final String[] USER_WHITELIST = {"/api/user/**"};
 	public static final String[] TEST_WHITELIST = {"/api/test/**"};
@@ -46,11 +48,21 @@ public class SecurityConfig {
 	public static final String ADMIN_ROLE_NAME = "ADMIN";
 
 
+	/**
+	 * Configuring the authentication manager
+	 * @param authenticationConfiguration the authentication configuration
+	 * @return the authentication manager
+	 * @throws Exception
+	 */
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
+	/**
+	 * Configuring the authentication provider
+	 * @return the authentication provider
+	 */
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -80,9 +92,14 @@ public class SecurityConfig {
 							.antMatchers(null, TEST_WHITELIST).hasRole("USER")
 							.anyRequest().authenticated();
 				})
+				.formLogin(httpSecurityFormLoginConfigurer ->
+						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
+								.successHandler(afterAuthenticationSuccessHandler)
+								.permitAll())
 				.httpBasic()
 				.and();
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+//		http.addFilterAfter(afterAuthenticationSuccessHandlers, JwtAuthFilter.class);
 		return http.build();
 	}
 

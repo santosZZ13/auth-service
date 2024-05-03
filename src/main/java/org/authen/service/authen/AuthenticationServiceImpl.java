@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -228,35 +229,40 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 					.body(responseModel);
 		}
 
-//		if (!passwordEncoder.matches(password, userEntity.getPassword())) {
-//			responseModel.setSuccess(Boolean.FALSE);
-//			responseModel.setData("Password is incorrect");
-//			return ResponseEntity
-//					.badRequest()
-//					.body(responseModel);
-//		}
 
-		// Get role from useEntity
+		Authentication authenticate;
 
-		Authentication authentication = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword(),
-				userService.getAuthorities(List.of(userEntity.getRole()))
-		);
+		try {
+			Authentication authentication = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword(), userService.getAuthorities(List.of(userEntity.getRole())));
+			authenticate = authenticationManager.authenticate(authentication);
 
-		Authentication authenticate = authenticationManager.authenticate(authentication);
-		Map<String, String> tokens = jwtTokenService.generateTokens(authenticate, userEntity);
+			if (authenticate.isAuthenticated()) {
+				SecurityContextHolder.getContext().setAuthentication(authenticate);
+			}
 
-		return ResponseEntity
-				.ok()
-				.body(ResponseModel
-						.builder()
-						.success(Boolean.TRUE)
-						.data(LoginResponseDTO
-								.builder()
-								.accessToken(tokens.get(AuthConstants.ACCESS_TOKEN))
-								.refreshToken(tokens.get(AuthConstants.REFRESH_TOKEN))
-								.build())
-						.build()
-				);
+
+			Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
+			Map<String, String> tokens = jwtTokenService.generateTokens(authenticate, userEntity);
+
+
+			return ResponseEntity
+					.ok()
+					.body(ResponseModel
+							.builder()
+							.success(Boolean.TRUE)
+							.data(LoginResponseDTO
+									.builder()
+									.accessToken(tokens.get(AuthConstants.ACCESS_TOKEN))
+									.refreshToken(tokens.get(AuthConstants.REFRESH_TOKEN))
+									.build())
+							.build()
+					);
+		} catch (Exception e) {
+			ErrorCode errorCode = new ErrorCode();
+			errorCode.addErrorField("XXXX", "XXX", "Invalid username or password");
+			String errorCodeInString = JsonConverter.convertToJsonString(errorCode);
+			throw new RegisterException(errorCodeInString);
+		}
 	}
 
 	@Override
