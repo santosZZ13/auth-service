@@ -1,4 +1,4 @@
-package org.authen.dto.register;
+package org.authen.web.dto.register;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +37,7 @@ public class RegisterDTORequest {
 	public static class RegisterForm {
 		private String username;
 		private String password;
+		private String passwordConfirm;
 		private String email;
 		private String type;
 		private String role;

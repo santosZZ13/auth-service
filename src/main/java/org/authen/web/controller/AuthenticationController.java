@@ -1,28 +1,24 @@
-package org.authen.controller;
+package org.authen.web.controller;
 
 
 import lombok.extern.log4j.Log4j2;
-import org.authen.dto.login.LoginRequestDTO;
-import org.authen.dto.register.RegisterDTORequest;
-import org.authen.dto.logout.LogoutRequestDTO;
-import org.authen.service.authen.AuthenticationService;
+import org.authen.web.dto.login.LoginRequestDTO;
+import org.authen.web.dto.register.RegisterDTORequest;
+import org.authen.web.dto.logout.LogoutRequestDTO;
+import org.authen.web.service.AuthenticationService;
 import org.authen.exception.apiEx.ResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Locale;
-
-import static org.authen.controller.AuthenticationController.AUTHENTICATION_ENDPOINT;
+import static org.authen.web.controller.AuthenticationController.AUTHENTICATION_ENDPOINT;
 
 @RestController
 @RequestMapping(value = AUTHENTICATION_ENDPOINT)
 @Log4j2
-
 public class AuthenticationController {
 	private final AuthenticationService authenticationService;
 	public static final String AUTHENTICATION_ENDPOINT = "/api/auth";
@@ -43,13 +39,23 @@ public class AuthenticationController {
 
 	@PostMapping(value = REGISTER_ENDPOINT)
 	public ResponseEntity<ResponseModel> registerAccount(@RequestBody RegisterDTORequest registerDTORequest, HttpServletRequest request) {
+		log.debug("Registering user account with information: {}", registerDTORequest);
 		return authenticationService.registerAccount(registerDTORequest, request);
 	}
 
 	@GetMapping(value = "/registrationConfirm")
 	public ResponseEntity<ResponseModel> confirmRegistration(@RequestParam("token") String token, HttpServletRequest request) {
+		log.debug("Confirming registration with token: {}", token);
 		return authenticationService.confirmRegistration(token, request);
 	}
+
+	@PostMapping(value = "/resetPassword")
+	public ResponseEntity<ResponseModel> resetPassword(@RequestParam("email") String email, HttpServletRequest request) {
+		log.debug("Resetting password for user with email: {}", email);
+		return authenticationService.resetPassword(email, request);
+	}
+
+
 
 
 	@PostMapping(value = LOGIN_ENDPOINT)

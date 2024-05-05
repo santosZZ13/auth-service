@@ -2,7 +2,7 @@ package org.authen.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.authen.dto.ApiErrorResponse;
+import org.authen.web.dto.ApiErrorResponse;
 import org.authen.persistence.model.UserEntity;
 import org.authen.service.user.UserService;
 import org.authen.jwt.JwtTokenService;
@@ -50,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 			if (Objects.isNull(token)) {
 				filterChain.doFilter(request, response);
-//				return;
+				return;
 			}
 
 			if (Objects.nonNull(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -2,6 +2,7 @@ package org.authen.service.user;
 
 import lombok.AllArgsConstructor;
 import org.authen.enums.AuthConstants;
+import org.authen.model.UserModel;
 import org.authen.persistence.dao.VerificationTokenRepository;
 import org.authen.persistence.model.UserEntity;
 import org.authen.persistence.dao.UserJpaRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +55,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 				.disabled(false)
 				.accountLocked(false)
 				.build();
+	}
+
+
+	@Override
+	public UserEntity findByEmail(String email) {
+		return userJpaRepository.findByEmail(email).orElse(null);
 	}
 
 	@Override
@@ -97,5 +105,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	@Override
 	public VerificationToken  generateNewVerificationToken(String token) {
 		return null;
+	}
+
+
+	@Override
+	public UserModel getUserModelByUsername(String username) {
+		Optional<UserEntity> userEntity = userJpaRepository.findByUsername(username);
+		return userEntity.map(UserModel::new).orElse(null);
 	}
 }

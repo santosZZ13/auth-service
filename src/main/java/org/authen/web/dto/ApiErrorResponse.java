@@ -1,4 +1,4 @@
-package org.authen.dto;
+package org.authen.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

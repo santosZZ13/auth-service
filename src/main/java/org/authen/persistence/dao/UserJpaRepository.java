@@ -13,6 +13,7 @@ import java.util.Optional;
 @EnableCaching
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 	Optional<UserEntity> findByUsername(String username);
+	Optional<UserEntity> findByEmail(String email);
 	@NotNull List<UserEntity> findAll();
 	@Override
 	<S extends UserEntity> @NotNull S save(@NotNull S entity);

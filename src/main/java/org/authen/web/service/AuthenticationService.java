@@ -1,8 +1,8 @@
-package org.authen.service.authen;
+package org.authen.web.service;
 
-import org.authen.dto.login.LoginRequestDTO;
-import org.authen.dto.register.RegisterDTORequest;
-import org.authen.dto.logout.LogoutRequestDTO;
+import org.authen.web.dto.login.LoginRequestDTO;
+import org.authen.web.dto.register.RegisterDTORequest;
+import org.authen.web.dto.logout.LogoutRequestDTO;
 import org.authen.exception.apiEx.ResponseModel;
 import org.springframework.http.ResponseEntity;
 
@@ -14,4 +14,5 @@ public interface AuthenticationService {
 	ResponseEntity<ResponseModel> login(LoginRequestDTO request);
 	ResponseEntity<ResponseModel> logout(LogoutRequestDTO request);
 	ResponseEntity<ResponseModel> confirmRegistration(String token, HttpServletRequest request);
+	ResponseEntity<ResponseModel> resetPassword(String email, HttpServletRequest request);
 }

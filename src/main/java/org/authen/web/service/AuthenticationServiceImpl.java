@@ -1,15 +1,16 @@
-package org.authen.service.authen;
+package org.authen.web.service;
 
 import lombok.AllArgsConstructor;
-import org.authen.dto.register.ConfirmRegistrationResponse;
+import org.authen.web.dto.register.ConfirmRegistrationResponse;
 import org.authen.enums.AuthConstants;
 import org.authen.exception.registerEx.RegisterException;
-import org.authen.dto.login.LoginRequestDTO;
-import org.authen.dto.login.LoginResponseDTO;
-import org.authen.dto.register.RegisterConfig;
-import org.authen.dto.register.RegisterDTORequest;
-import org.authen.dto.logout.LogoutRequestDTO;
-import org.authen.dto.register.RegisterDTOResponse;
+import org.authen.web.dto.login.LoginRequestDTO;
+import org.authen.web.dto.login.LoginResponseDTO;
+import org.authen.web.dto.register.RegisterConfig;
+import org.authen.web.dto.register.RegisterDTORequest;
+import org.authen.web.dto.logout.LogoutRequestDTO;
+import org.authen.web.dto.register.RegisterDTOResponse;
+import org.authen.filter.AfterAuthenticationSuccessHandler;
 import org.authen.listener.OnRegistrationCompleteEvent;
 import org.authen.persistence.model.UserEntity;
 import org.authen.jwt.JwtTokenService;
@@ -30,11 +31,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import static org.authen.dto.register.RegisterDTORequest.*;
+import static org.authen.web.dto.register.RegisterDTORequest.*;
 
 @Service
 @AllArgsConstructor
@@ -48,6 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenService jwtTokenService;
 	private final ApplicationEventPublisher eventPublisher;
+	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
 
 	private final String MISSING_REQUIRED_FIELD_CODE = "C1010003";
 	private final String MISSING_REQUIRED_FIELD_MESSAGE = "Mandatory parameter {%s} is not specified";
@@ -96,6 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 //			userService.saveUser(userEntityWithHashPasswordToSaveInDB);
 
+			// Publish event
 			try {
 				eventPublisher.publishEvent(new OnRegistrationCompleteEvent(
 						userEntityWithHashPasswordToSaveInDB,
@@ -210,6 +216,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 
+	@Override
+	public ResponseEntity<ResponseModel> resetPassword(String email, HttpServletRequest request) {
+		UserEntity userEntity = userService.findByUsername(email);
+		ErrorCode errorCode = new ErrorCode();
+
+
+		return null;
+	}
 
 	@Override
 	public ResponseEntity<ResponseModel> login(LoginRequestDTO request) {
@@ -237,14 +251,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			authenticate = authenticationManager.authenticate(authentication);
 
 			if (authenticate.isAuthenticated()) {
+				HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+				HttpServletResponse servletResponse = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
 				SecurityContextHolder.getContext().setAuthentication(authenticate);
+				afterAuthenticationSuccessHandler.onAuthenticationSuccess(servletRequest, servletResponse, authenticate);
 			}
 
 
-			Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
 			Map<String, String> tokens = jwtTokenService.generateTokens(authenticate, userEntity);
-
-
 			return ResponseEntity
 					.ok()
 					.body(ResponseModel

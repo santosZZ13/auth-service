@@ -91,13 +91,13 @@ public class SecurityConfig {
 							.antMatchers(null, ADMIN_WHITELIST).hasAnyRole(ADMIN_ROLE_NAME)
 							.antMatchers(null, TEST_WHITELIST).hasRole("USER")
 							.anyRequest().authenticated();
-				})
-				.formLogin(httpSecurityFormLoginConfigurer ->
-						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
-								.successHandler(afterAuthenticationSuccessHandler)
-								.permitAll())
-				.httpBasic()
-				.and();
+				});
+//				.formLogin(httpSecurityFormLoginConfigurer ->
+//						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
+//								.successHandler(afterAuthenticationSuccessHandler)
+//								.permitAll())
+//				.httpBasic()
+//				.and();
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 //		http.addFilterAfter(afterAuthenticationSuccessHandlers, JwtAuthFilter.class);
 		return http.build();

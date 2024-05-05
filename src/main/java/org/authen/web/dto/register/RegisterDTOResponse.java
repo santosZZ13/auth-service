@@ -1,4 +1,4 @@
-package org.authen.dto.register;
+package org.authen.web.dto.register;
 
 
 import lombok.Builder;

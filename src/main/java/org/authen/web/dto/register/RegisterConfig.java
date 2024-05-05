@@ -1,4 +1,4 @@
-package org.authen.dto.register;
+package org.authen.web.dto.register;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
