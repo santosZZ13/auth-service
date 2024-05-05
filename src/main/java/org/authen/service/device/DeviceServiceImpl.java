@@ -4,9 +4,12 @@ import com.google.common.base.Strings;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
+import org.authen.model.Request;
+import org.authen.model.UserModel;
 import org.authen.persistence.dao.DeviceMetadataRepository;
 import org.authen.persistence.model.DeviceMetadata;
 import org.authen.persistence.model.UserEntity;
+import org.authen.util.device.DeviceMetaDataUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -28,90 +31,48 @@ import static java.util.Objects.nonNull;
 public class DeviceServiceImpl implements DeviceService {
 
 	private static final String UNKNOWN = "UNKNOWN";
-	private final DatabaseReader databaseReader;
-	private final Parser parser;
 	private final DeviceMetadataRepository deviceMetadataRepository;
+	private DeviceMetaDataUtils deviceMetaDataUtils;
 
-	public DeviceServiceImpl(@Qualifier("GeoIPCity") DatabaseReader databaseReader, Parser parser, DeviceMetadataRepository deviceMetadataRepository) {
-		this.databaseReader = databaseReader;
-		this.parser = parser;
+
+
+	public DeviceServiceImpl(DeviceMetadataRepository deviceMetadataRepository) {
 		this.deviceMetadataRepository = deviceMetadataRepository;
-	}
-
-	@Override
-	public String extractIpFromRequest(@NotNull HttpServletRequest request) {
-		final String clientIp;
-		String clientXForwardedForIp = request.getHeader("x-forwarded-for");
-		if (nonNull(clientXForwardedForIp)) {
-			clientIp = parseXForwardedHeader(clientXForwardedForIp);
-		} else {
-			clientIp = request.getRemoteAddr();
-		}
-		return clientIp;
-	}
-
-	@Override
-	public String getIpLocation(String ip) {
-		String location = null;
-
-		try {
-			InetAddress ipAddress = InetAddress.getByName(ip);
-			CityResponse cityResponse = databaseReader.city(ipAddress);
-
-			if (nonNull(cityResponse) &&
-					nonNull(cityResponse.getCity()) &&
-					!Strings.isNullOrEmpty(cityResponse.getCity().getName())) {
-
-				location = cityResponse.getCity().getName();
-				return location;
-			}
-
-		} catch (IOException | GeoIp2Exception exception) {
-			location = UNKNOWN;
-//			throw new UnableToLocateIpException("Unable to locate IP address: " + ip, exception);
-		}
-		return location;
-	}
-
-	@Override
-	public String getDeviceDetails(String userAgent) {
-		String deviceDetails = UNKNOWN;
-		Client client = parser.parse(userAgent);
-
-		if (Objects.nonNull(client)) {
-			deviceDetails = client.userAgent.family
-					+ " " + client.userAgent.major + "."
-					+ client.userAgent.minor + " - "
-					+ client.os.family + " " + client.os.major
-					+ "." + client.os.minor;
-		}
-		return deviceDetails;
 	}
 
 	private String parseXForwardedHeader(String header) {
 		return header.split(" *, *")[0];
 	}
 
-	public void verifyDevice(UserEntity user, HttpServletRequest request) {
-		String ip = extractIpFromRequest(request);
-		String location = getIpLocation(ip);
-		String deviceDetails = getDeviceDetails(request.getHeader("user-agent"));
+	@Override
+	public void verifyDevice(UserModel userModel, Request request) {
 
-		DeviceMetadata existingDevice = findExistingDevice(user.getId(), deviceDetails, location);
+		try {
+			final String ip = deviceMetaDataUtils.extractIpFromRequest(request.getRequest());
+			final String location = deviceMetaDataUtils.getIpLocation(ip);
+			final String deviceDetails = deviceMetaDataUtils.getDeviceDetails(request.getRequest().getHeader("user-agent"));
+			final Locale locate = request.getRequest().getLocale();
 
-		if (Objects.isNull(existingDevice)) {
-			unknownDeviceNotification(deviceDetails, location, ip, user.getEmail(), request.getLocale());
-			DeviceMetadata deviceMetadata = new DeviceMetadata();
-			deviceMetadata.setUserId(user.getId());
-			deviceMetadata.setLocation(location);
-			deviceMetadata.setDeviceDetails(deviceDetails);
-			deviceMetadata.setLastLoggedIn(new Date());
-			deviceMetadataRepository.save(deviceMetadata);
-		} else {
-			existingDevice.setLastLoggedIn(new Date());
-			deviceMetadataRepository.save(existingDevice);
+			DeviceMetadata existingDevice = findExistingDevice(userModel.getId(), deviceDetails, location);
+			final Long userId = userModel.getId();
+			final String email = userModel.getEmail();
+
+			if (Objects.isNull(existingDevice)) {
+				unknownDeviceNotification(deviceDetails, location, ip, email, locate);
+				DeviceMetadata deviceMetadata = DeviceMetadata.builder()
+						.userId(userId)
+						.deviceDetails(deviceDetails)
+						.location(deviceDetails)
+						.lastLoggedIn(new Date())
+						.build();
+				deviceMetadataRepository.save(deviceMetadata);
+			} else {
+				existingDevice.setLastLoggedIn(new Date());
+				deviceMetadataRepository.save(existingDevice);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error while verifying device");
 		}
-
 	}
 
 	private void unknownDeviceNotification(String deviceDetails, String location, String ip, String email, Locale locale) {

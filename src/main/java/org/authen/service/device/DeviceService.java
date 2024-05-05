@@ -1,9 +1,10 @@
 package org.authen.service.device;
 
+import org.authen.model.Request;
+import org.authen.model.UserModel;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface DeviceService {
-	String extractIpFromRequest(HttpServletRequest request);
-	String getIpLocation(String ip);
-	String getDeviceDetails(String userAgent);
+	void verifyDevice(UserModel userModel, Request request);
 }

@@ -2,6 +2,7 @@ package org.authen.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.authen.model.Request;
 import org.authen.model.UserModel;
 import org.authen.persistence.dao.DeviceMetadataRepository;
 import org.authen.persistence.dao.UserJpaRepository;
@@ -36,34 +37,14 @@ public class AfterAuthenticationSuccessHandler implements AuthenticationSuccessH
 	}
 
 	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+	public void onAuthenticationSuccess(HttpServletRequest servletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-		final String ipFromRequest = deviceService.extractIpFromRequest(request);
-		final String ipLocation = deviceService.getIpLocation(ipFromRequest);
-		final String deviceDetails = deviceService.getDeviceDetails(request.getHeader("agent"));
 		User user = (User) authentication.getPrincipal();
-
 		UserModel userModelByUsername = userService.getUserModelByUsername(user.getUsername());
+		Request request = Request.builder().request(servletRequest).build();
 
 		if (Objects.nonNull(userModelByUsername)) {
-			final Long userId = userModelByUsername.getId();
-			final String email = userModelByUsername.getEmail();
-			DeviceMetadata existingDevice = findExistingDevice(userId, deviceDetails, ipLocation);
-
-			if (Objects.isNull(existingDevice)) {
-				unknownDeviceNotification(deviceDetails, ipLocation, ipFromRequest, email, request.getLocale());
-				DeviceMetadata deviceMetadata = DeviceMetadata.builder()
-						.userId(userId)
-						.deviceDetails(deviceDetails)
-						.location(ipLocation)
-						.lastLoggedIn(new Date())
-						.build();
-				deviceMetadataRepository.save(deviceMetadata);
-			} else {
-				existingDevice.setLastLoggedIn(new Date());
-				deviceMetadataRepository.save(existingDevice);
-			}
-
+			deviceService.verifyDevice(userModelByUsername, request);
 		} else {
 			throw new RuntimeException("User not found");
 		}
