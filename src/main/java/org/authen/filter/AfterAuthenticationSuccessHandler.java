@@ -9,6 +9,7 @@ import org.authen.persistence.model.DeviceMetadata;
 import org.authen.persistence.model.UserEntity;
 import org.authen.service.device.DeviceService;
 import org.authen.service.user.UserService;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -69,7 +70,7 @@ public class AfterAuthenticationSuccessHandler implements AuthenticationSuccessH
 
 	}
 
-	private DeviceMetadata findExistingDevice(Long userId, String deviceDetails, String location) {
+	private @Nullable DeviceMetadata findExistingDevice(Long userId, String deviceDetails, String location) {
 		List<DeviceMetadata> knownDevices = deviceMetadataRepository.findByUserId(userId);
 
 		for (DeviceMetadata existingDevice : knownDevices) {
