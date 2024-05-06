@@ -1,7 +1,4 @@
-package org.authen.service.user;
-
-import persistent.entity.UserEntity;
-import persistent.entity.VerificationToken;
+package service.verificationToken;
 
 public interface VerificationTokenService {
 	void createVerificationTokenForUser(UserEntity user, String token);

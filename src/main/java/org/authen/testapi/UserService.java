@@ -1,8 +1,8 @@
 package org.authen.testapi;
 
 import lombok.AllArgsConstructor;
-import org.authen.persistence.model.UserEntity;
-import org.authen.persistence.dao.UserJpaRepository;
+import persistent.entity.UserEntity;
+import persistent.repository.UserJpaRepository;
 import org.authen.util.HashMapping;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package org.authen.persistence.model;
+package persistent.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;

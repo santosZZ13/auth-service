@@ -1,6 +1,6 @@
-package org.authen.persistence.dao;
+package persistent.repository;
 
-import org.authen.persistence.model.DeviceMetadata;
+import persistent.entity.DeviceMetadata;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

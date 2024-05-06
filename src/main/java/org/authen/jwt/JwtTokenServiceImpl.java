@@ -2,7 +2,7 @@ package org.authen.jwt;
 
 import io.jsonwebtoken.*;
 import org.authen.enums.AuthConstants;
-import org.authen.persistence.model.UserEntity;
+import service.model.UserModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -29,20 +29,20 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 	private String secret;
 	private final String AUTHORITIES_KEY = "secret";
 	@Override
-	public Map<String, String> generateTokens(Authentication authentication, UserEntity userEntity) {
-		String accessToken = createToken(authentication, userEntity, accessTokenExpirationSecond);
-		String refreshToken = createToken(authentication, userEntity, refreshTokenExpirationSecond);
+	public Map<String, String> generateTokens(Authentication authentication, UserModel userModel) {
+		String accessToken = createToken(authentication, userModel, accessTokenExpirationSecond);
+		String refreshToken = createToken(authentication, userModel, refreshTokenExpirationSecond);
 		assert accessToken != null;
 		assert refreshToken != null;
 		return Map.of(AuthConstants.ACCESS_TOKEN, accessToken, AuthConstants.REFRESH_TOKEN, refreshToken);
 	}
 
-	private String createToken(Authentication authentication, UserEntity userEntity, long expirationSecond) {
+	private String createToken(Authentication authentication, UserModel userModel, long expirationSecond) {
 
 		final String userName = authentication.getName();
 		final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-		Claims claims = Jwts.claims().setSubject(userName).setId(userEntity.getId().toString());
+		Claims claims = Jwts.claims().setSubject(userName).setId(userModel.getId().toString());
 		claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
 
 		Date from = Date.from(Instant.now());
@@ -94,7 +94,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
 
 	@Override
-	public boolean validateToken(String token, UserEntity userEntity) {
+	public boolean validateToken(String token, UserModel userEntity) {
 		return extractUsername(token).equals(userEntity.getUsername()) && !isTokenExpired(token);
 	}
 

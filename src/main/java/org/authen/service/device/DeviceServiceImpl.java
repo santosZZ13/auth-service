@@ -1,43 +1,33 @@
 package org.authen.service.device;
 
-import com.google.common.base.Strings;
-import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.maxmind.geoip2.model.CityResponse;
-import org.authen.model.Request;
-import org.authen.model.UserModel;
-import org.authen.persistence.dao.DeviceMetadataRepository;
-import org.authen.persistence.model.DeviceMetadata;
-import org.authen.persistence.model.UserEntity;
+import org.authen.model.RequestWrapper;
+import service.model.UserModel;
+import persistent.repository.DeviceMetadataRepository;
+import persistent.entity.DeviceMetadata;
+import org.authen.service.user.UserService;
 import org.authen.util.device.DeviceMetaDataUtils;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import ua_parser.Client;
-import ua_parser.Parser;
 
-import javax.servlet.http.HttpServletRequest;
-
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import static java.util.Objects.nonNull;
 
 @Service
 public class DeviceServiceImpl implements DeviceService {
 
 	private static final String UNKNOWN = "UNKNOWN";
 	private final DeviceMetadataRepository deviceMetadataRepository;
-	private DeviceMetaDataUtils deviceMetaDataUtils;
+	private final DeviceMetaDataUtils deviceMetaDataUtils;
+	private final UserService userService;
 
 
-
-	public DeviceServiceImpl(DeviceMetadataRepository deviceMetadataRepository) {
+	public DeviceServiceImpl(DeviceMetadataRepository deviceMetadataRepository, DeviceMetaDataUtils deviceMetaDataUtils, UserService userService) {
 		this.deviceMetadataRepository = deviceMetadataRepository;
+		this.deviceMetaDataUtils = deviceMetaDataUtils;
+		this.userService = userService;
 	}
 
 	private String parseXForwardedHeader(String header) {
@@ -45,33 +35,38 @@ public class DeviceServiceImpl implements DeviceService {
 	}
 
 	@Override
-	public void verifyDevice(UserModel userModel, Request request) {
+	public void verifyDevice(Authentication authentication, RequestWrapper requestWrapper) {
 
-		try {
-			final String ip = deviceMetaDataUtils.extractIpFromRequest(request.getRequest());
-			final String location = deviceMetaDataUtils.getIpLocation(ip);
-			final String deviceDetails = deviceMetaDataUtils.getDeviceDetails(request.getRequest().getHeader("user-agent"));
-			final Locale locate = request.getRequest().getLocale();
+		User user = (User) authentication.getPrincipal();
+		UserModel userModelByUsername = userService.getUserModelByUsername(user.getUsername());
 
-			DeviceMetadata existingDevice = findExistingDevice(userModel.getId(), deviceDetails, location);
-			final Long userId = userModel.getId();
-			final String email = userModel.getEmail();
+		if (Objects.nonNull(userModelByUsername)) {
+			try {
+				final String ip = deviceMetaDataUtils.extractIpFromRequest(requestWrapper.getRequest());
+				final String location = deviceMetaDataUtils.getIpLocation(ip);
+				final String deviceDetails = deviceMetaDataUtils.getDeviceDetails(requestWrapper.getRequest().getHeader("user-agent"));
+				final Locale locate = requestWrapper.getRequest().getLocale();
 
-			if (Objects.isNull(existingDevice)) {
-				unknownDeviceNotification(deviceDetails, location, ip, email, locate);
-				DeviceMetadata deviceMetadata = DeviceMetadata.builder()
-						.userId(userId)
-						.deviceDetails(deviceDetails)
-						.location(deviceDetails)
-						.lastLoggedIn(new Date())
-						.build();
-				deviceMetadataRepository.save(deviceMetadata);
-			} else {
-				existingDevice.setLastLoggedIn(new Date());
-				deviceMetadataRepository.save(existingDevice);
+				DeviceMetadata existingDevice = findExistingDevice(userModelByUsername.getId(), deviceDetails, location);
+				final Long userId = userModelByUsername.getId();
+				final String email = userModelByUsername.getEmail();
+
+				if (Objects.isNull(existingDevice)) {
+					unknownDeviceNotification(deviceDetails, location, ip, email, locate);
+					DeviceMetadata deviceMetadata = DeviceMetadata.builder()
+							.userId(userId)
+							.deviceDetails(deviceDetails)
+							.location(deviceDetails)
+							.lastLoggedIn(new Date())
+							.build();
+					deviceMetadataRepository.save(deviceMetadata);
+				} else {
+					existingDevice.setLastLoggedIn(new Date());
+					deviceMetadataRepository.save(existingDevice);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Error while verifying device");
 			}
-		} catch (Exception e) {
-			throw new RuntimeException("Error while verifying device");
 		}
 	}
 

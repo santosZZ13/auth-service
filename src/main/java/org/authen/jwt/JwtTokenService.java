@@ -1,7 +1,7 @@
 package org.authen.jwt;
 
 import io.jsonwebtoken.Claims;
-import org.authen.persistence.model.UserEntity;
+import service.model.UserModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Component
 public interface JwtTokenService {
-	Map<String, String> generateTokens(Authentication authentication, UserEntity userEntity);
+	Map<String, String> generateTokens(Authentication authentication, UserModel userModel);
 	Claims getTokenBody(String token);
 	default String getTokenFromRequest(HttpServletRequest request) {
 		return "";
@@ -18,6 +18,6 @@ public interface JwtTokenService {
 	default String extractUsername(String token) {
 		return "";
 	};
-	boolean validateToken(String token, UserEntity userEntity);
+	boolean validateToken(String token, UserModel userModel);
 }
 

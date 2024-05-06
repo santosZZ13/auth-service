@@ -1,6 +1,6 @@
-package org.authen.persistence.dao;
+package persistent.repository;
 
-import org.authen.persistence.model.UserEntity;
+import persistent.entity.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,10 +1,8 @@
 package org.authen.service.device;
 
-import org.authen.model.Request;
-import org.authen.model.UserModel;
-
-import javax.servlet.http.HttpServletRequest;
+import org.authen.model.RequestWrapper;
+import org.springframework.security.core.Authentication;
 
 public interface DeviceService {
-	void verifyDevice(UserModel userModel, Request request);
+	void verifyDevice(Authentication authentication, RequestWrapper requestWrapper);
 }

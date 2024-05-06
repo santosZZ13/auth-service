@@ -1,14 +1,17 @@
-package org.authen.model;
+package service.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.authen.persistence.model.UserEntity;
+import lombok.NoArgsConstructor;
+import persistent.entity.UserEntity;
 
-import javax.persistence.Column;
 import java.util.Date;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserModel {
 	private Long id;
 	private String username;
@@ -36,5 +39,22 @@ public class UserModel {
 		this.lastName = userEntity.getLastName();
 		this.createdAt = userEntity.getCreatedAt();
 		this.updatedAt = userEntity.getUpdatedAt();
+	}
+
+	public UserEntity toUserEntity() {
+		UserEntity userEntity = new UserEntity();
+		userEntity.setId(this.id);
+		userEntity.setUsername(this.username);
+		userEntity.setPassword(this.password);
+		userEntity.setRole(this.role);
+		userEntity.setEnabled(this.enabled);
+		userEntity.setEmail(this.email);
+		userEntity.setType(this.type);
+		userEntity.setLocate(this.locate);
+		userEntity.setFirstName(this.firstName);
+		userEntity.setLastName(this.lastName);
+		userEntity.setCreatedAt(this.createdAt);
+		userEntity.setUpdatedAt(this.updatedAt);
+		return userEntity;
 	}
 }

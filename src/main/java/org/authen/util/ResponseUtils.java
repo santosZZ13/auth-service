@@ -1,7 +1,5 @@
 package org.authen.util;
 
-import org.authen.exception.apiEx.ResponseModel;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 

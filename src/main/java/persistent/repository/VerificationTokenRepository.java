@@ -1,10 +1,8 @@
-package org.authen.persistence.dao;
+package persistent.repository;
 
-import org.authen.persistence.model.UserEntity;
-import org.authen.persistence.model.VerificationToken;
+import persistent.entity.UserEntity;
+import persistent.entity.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.stream.Stream;

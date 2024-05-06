@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseModel {
+public class GenericResponse {
 	private Boolean success;
 	private Object data;
 

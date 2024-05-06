@@ -1,9 +1,9 @@
 package org.authen.job.service;
 
-import org.authen.exception.apiEx.ResponseModel;
+import org.authen.exception.apiEx.GenericResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface JobService {
-	ResponseEntity<ResponseModel> getCreatedJobs();
+	ResponseEntity<GenericResponse> getCreatedJobs();
 	Boolean cancelJobWithJobName(String jobName);
 }

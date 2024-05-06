@@ -2,7 +2,7 @@ package org.authen.listener;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.authen.persistence.model.UserEntity;
+import persistent.entity.UserEntity;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Locale;
