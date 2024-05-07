@@ -24,13 +24,13 @@ public class PasswordController {
 
 	@PostMapping(value = "/password/reset")
 	public ResponseEntity<GenericResponseWrapper> resetPassword(@RequestParam("email") String email, HttpServletRequest request) {
-		log.debug("Resetting password for user with email: {}", email);
+		log.info("#Resetting password for user with email: {}", email);
 		return passwordService.resetPassword(email, request);
 	}
 
 	@PostMapping(value = "/password/update")
 	public ResponseEntity<GenericResponseWrapper> changeUserPassword(Locale locale, @RequestBody UpdatePasswordDTO updatePasswordDTO) {
-		log.debug("Updating password for user with email: {}", locale);
+		log.info("Updating password for user with email: {}", locale);
 		return passwordService.changeUserPassword(updatePasswordDTO);
 	}
 }
