@@ -2,7 +2,7 @@ package org.authen.jwt;
 
 import io.jsonwebtoken.*;
 import org.authen.enums.AuthConstants;
-import service.model.UserModel;
+import org.authen.level.service.model.UserModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;

@@ -1,9 +1,9 @@
 package org.authen.web.service;
 
 import lombok.AllArgsConstructor;
-import org.authen.exception.apiEx.GenericResponse;
-import service.model.UserModel;
-import org.authen.util.ErrorCode;
+import org.authen.wapper.model.GenericResponseWrapper;
+import org.authen.level.service.model.UserModel;
+import org.authen.util.error.ErrorCode;
 import org.authen.web.dto.pw.UpdatePasswordDTO;
 import org.authen.web.exception.InvalidOldPasswordException;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import service.user.UserLogicService;
+import org.authen.level.service.user.UserLogicService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -25,13 +25,13 @@ public class PasswordServiceImpl implements PasswordService {
 
 
 	@Override
-	public ResponseEntity<GenericResponse> resetPassword(String email, HttpServletRequest request) {
+	public ResponseEntity<GenericResponseWrapper> resetPassword(String email, HttpServletRequest request) {
 		return null;
 	}
 
 
 	@Override
-	public ResponseEntity<GenericResponse> changeUserPassword(UpdatePasswordDTO updatePasswordDTO) {
+	public ResponseEntity<GenericResponseWrapper> changeUserPassword(UpdatePasswordDTO updatePasswordDTO) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		ErrorCode errorCode = new ErrorCode();
 		final String oldPassword = updatePasswordDTO.getConfig().getOldPassword();
@@ -51,7 +51,7 @@ public class PasswordServiceImpl implements PasswordService {
 				throw new InvalidOldPasswordException("Invalid old password");
 			}
 			changeUserPassword(userModelByUsername, newPassword);
-			return ResponseEntity.ok(GenericResponse.builder()
+			return ResponseEntity.ok(GenericResponseWrapper.builder()
 					.success(Boolean.TRUE)
 					.data("Password updated successfully")
 					.build());

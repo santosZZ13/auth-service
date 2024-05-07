@@ -1,6 +1,6 @@
 package org.authen.job.controller;
 
-import org.authen.exception.apiEx.GenericResponse;
+import org.authen.wapper.model.GenericResponseWrapper;
 import org.authen.job.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class JobController {
 	}
 
 	@GetMapping(VERSION_1 + JOB)
-	public ResponseEntity<GenericResponse> getCreatedJobs() {
+	public ResponseEntity<GenericResponseWrapper> getCreatedJobs() {
 		return jobService.getCreatedJobs();
 	}
 

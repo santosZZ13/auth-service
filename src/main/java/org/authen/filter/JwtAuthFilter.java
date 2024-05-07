@@ -2,7 +2,7 @@ package org.authen.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import service.model.UserModel;
+import org.authen.level.service.model.UserModel;
 import org.authen.web.dto.ApiErrorResponse;
 import org.authen.service.user.UserService;
 import org.authen.jwt.JwtTokenService;

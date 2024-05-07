@@ -1,7 +1,7 @@
 package org.authen.job.service;
 
 import org.authen.config.CustomTaskScheduler;
-import org.authen.exception.apiEx.GenericResponse;
+import org.authen.wapper.model.GenericResponseWrapper;
 import org.authen.job.model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +22,11 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public ResponseEntity<GenericResponse> getCreatedJobs() {
+	public ResponseEntity<GenericResponseWrapper> getCreatedJobs() {
 		Map<Job, ScheduledFuture<?>> scheduledTasks = this.taskScheduler.getScheduledTasks();
 		Set<Job> jobs = scheduledTasks.keySet();
 		return ResponseEntity
-				.ok(GenericResponse.builder()
+				.ok(GenericResponseWrapper.builder()
 						.success(Boolean.TRUE)
 						.data(jobs).build()
 				);

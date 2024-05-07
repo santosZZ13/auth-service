@@ -1,27 +1,22 @@
 package org.authen.web.service;
 
 import lombok.AllArgsConstructor;
-import service.model.UserModel;
+import lombok.extern.log4j.Log4j2;
+import org.authen.level.service.model.UserModel;
 import org.authen.enums.AuthConstants;
-import org.authen.exception.registerEx.RegisterException;
+import org.authen.util.error.ErrorCode;
+import org.authen.web.exception.LoginException;
 import org.authen.web.dto.login.LoginRequestDTO;
 import org.authen.web.dto.login.LoginResponseDTO;
 import org.authen.web.dto.logout.LogoutRequestDTO;
 import org.authen.filter.AfterAuthenticationSuccessHandler;
 import org.authen.jwt.JwtTokenService;
-import org.authen.exception.apiEx.GenericResponse;
-import org.authen.service.validation.ValidateRegister;
+import org.authen.wapper.model.GenericResponseWrapper;
 import org.authen.service.user.UserService;
-import org.authen.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,38 +27,36 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 //@Transactional(readOnly = false)
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-	private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 	private final UserService userService;
-	private final ValidateRegister validateRegister;
-	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenService jwtTokenService;
-	private final ApplicationEventPublisher eventPublisher;
 	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
 
 
 
 	@Override
-	public ResponseEntity<GenericResponse> login(LoginRequestDTO loginRequest) {
-		final String username = loginRequest.getUsername();
-		final String password = loginRequest.getPassword();
+	public GenericResponseWrapper login(LoginRequestDTO loginRequest) {
+		final String username = loginRequest.getLoginForm().getUsername();
+		final String password = loginRequest.getLoginForm().getPassword();
 		UserModel userModel = userService.getUserModelByUsername(username);
 		ErrorCode errorCode = new ErrorCode();
 
 		if (Objects.isNull(userModel)) {
-			errorCode.addErrorField("XXXX", "XXX", String.format("User with username %s not found", username));
-			String errorCodeInString = JsonConverter.convertToJsonString(errorCode);
-			throw new RegisterException(errorCodeInString);
+//			errorCode.addErrorField("XXXX", "XXX", String.format("User with username {%s} not found", username));
+//			String errorCodeInString = JsonConverter.convertToJsonString(errorCode);
+//			throw new RegisterException(errorCodeInString);
+//			throw new LoginException("123", "Cannot ", "21312");
+			throw new LoginException("Not found the user in our system", "XXX", String.format("User: %s", username));
 		}
-
 
 		Authentication authenticate;
 
 		try {
-			Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword(), userService.getAuthorities(List.of(userModel.getRole())));
+			Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, userService.getAuthorities(List.of(userModel.getRole())));
 			authenticate = authenticationManager.authenticate(authentication);
 
 			if (authenticate.isAuthenticated()) {
@@ -75,28 +68,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			}
 
 			Map<String, String> tokens = jwtTokenService.generateTokens(authenticate, userModel);
-			return ResponseEntity
-					.ok()
-					.body(GenericResponse
+
+			return GenericResponseWrapper
+					.builder()
+					.data(LoginResponseDTO
 							.builder()
-							.success(Boolean.TRUE)
-							.data(LoginResponseDTO
-									.builder()
-									.accessToken(tokens.get(AuthConstants.ACCESS_TOKEN))
-									.refreshToken(tokens.get(AuthConstants.REFRESH_TOKEN))
-									.build())
-							.build()
-					);
+							.accessToken(tokens.get(AuthConstants.ACCESS_TOKEN))
+							.refreshToken(tokens.get(AuthConstants.REFRESH_TOKEN))
+							.build())
+					.build();
+
 		} catch (Exception e) {
-			ErrorCode errorCodeEx = new ErrorCode();
-			errorCodeEx.addErrorField("XXXX", "XXX", "Invalid username or password");
-			String errorCodeInString = JsonConverter.convertToJsonString(errorCodeEx);
-			throw new RegisterException(errorCodeInString);
+//			ErrorCode errorCodeEx = new ErrorCode();
+//			errorCodeEx.addErrorField("XXXX", "XXX", "Invalid username or password");
+//			String errorCodeInString = JsonConverter.convertToJsonString(errorCodeEx);
+			log.error("#Authen login :: {} ::  Error Occurred ::  {} ", loginRequest, e.getMessage());
+			throw new LoginException("Invalid user or password", "XXX", String.format("User: %s", username));
 		}
 	}
 
 	@Override
-	public ResponseEntity<GenericResponse> logout(LogoutRequestDTO request) {
+	public GenericResponseWrapper logout(LogoutRequestDTO request) {
 		return null;
 	}
 

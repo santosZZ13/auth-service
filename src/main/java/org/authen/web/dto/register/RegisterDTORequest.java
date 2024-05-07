@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import persistent.entity.UserEntity;
+import org.authen.level.service.model.UserModel;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,8 +63,8 @@ public class RegisterDTORequest {
 		return map;
 	}
 
-	public UserEntity toUserEntityWithHashPasswordToSaveInDB(final String hashedPassword) {
-		return UserEntity.builder()
+	public UserModel toUserEntityWithHashPasswordToSaveInDB(final String hashedPassword) {
+		return UserModel.builder()
 				.username(this.registerForm.getUsername())
 				.password(hashedPassword)
 				.email(this.registerForm.getEmail())

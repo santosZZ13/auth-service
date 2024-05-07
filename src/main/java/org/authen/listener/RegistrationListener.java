@@ -1,28 +1,27 @@
 package org.authen.listener;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import persistent.entity.UserEntity;
+import org.authen.service.token.VerificationTokenService;
 import org.authen.service.user.UserService;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
+import org.authen.level.service.model.UserModel;
 
 import java.util.UUID;
 
 @Component
 @Log4j2
+@AllArgsConstructor
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
-	@Autowired
-	private MessageSource messages;
-
-//	@Autowired
+	private final MessageSource messages;
 //	private JavaMailSender mailSender;
+	private final UserService userService;
+	private final VerificationTokenService verificationTokenService;
 
-	@Autowired
-	private UserService userService;
 
 	@Override
 	public void onApplicationEvent(@NotNull OnRegistrationCompleteEvent event) {
@@ -30,10 +29,10 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 	}
 
 	private void confirmRegistration(OnRegistrationCompleteEvent event) {
-		UserEntity userEntity = event.getUser();
+		UserModel userModel = event.getUser();
 		String token = UUID.randomUUID().toString();
 
-		userService.createVerificationTokenForUser(userEntity, token);
+		verificationTokenService.createVerificationTokenForUser(userModel, token);
 
 //		String recipientAddress = userEntity.getEmail();
 		String subject = "Registration Confirmation";

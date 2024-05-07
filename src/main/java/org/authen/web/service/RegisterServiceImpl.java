@@ -2,15 +2,13 @@ package org.authen.web.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.authen.exception.apiEx.GenericResponse;
-import org.authen.exception.registerEx.RegisterException;
+import org.authen.wapper.model.GenericResponseWrapper;
+import org.authen.web.exception.RegisterException;
 import org.authen.listener.OnRegistrationCompleteEvent;
-import persistent.entity.UserEntity;
-import persistent.entity.VerificationToken;
 import org.authen.service.user.UserService;
-import org.authen.util.ErrorCode;
-import org.authen.util.JsonConverter;
-import org.authen.util.ValidateField;
+import org.authen.util.error.ErrorCode;
+import org.authen.util.converter.JsonConverter;
+import org.authen.util.validate.ValidateField;
 import org.authen.web.dto.register.ConfirmRegistrationResponse;
 import org.authen.web.dto.register.RegisterConfig;
 import org.authen.web.dto.register.RegisterDTORequest;
@@ -20,6 +18,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.authen.level.service.model.UserModel;
+import org.authen.level.service.model.VerificationTokenModel;
+import org.authen.level.service.verificationToken.VerificationTokenLogicServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
@@ -38,6 +39,8 @@ public class RegisterServiceImpl implements RegisterService {
 	private final ApplicationEventPublisher eventPublisher;
 	private final PasswordEncoder passwordEncoder;
 	private final UserService userService;
+	private final VerificationTokenLogicServiceImpl verificationTokenLogicService;
+
 
 	private final String MISSING_REQUIRED_FIELD_CODE = "C1010003";
 	private final String MISSING_REQUIRED_FIELD_MESSAGE = "Mandatory parameter {%s} is not specified";
@@ -55,7 +58,7 @@ public class RegisterServiceImpl implements RegisterService {
 
 
 	@Override
-	public ResponseEntity<GenericResponse> registerAccount(RegisterDTORequest registerDTORequest, HttpServletRequest request) {
+	public ResponseEntity<GenericResponseWrapper> registerAccount(RegisterDTORequest registerDTORequest, HttpServletRequest request) {
 		ErrorCode errorCode = new ErrorCode();
 		Map<String, String> mapFromRegisterForm = registerDTORequest.toMapFromRegisterForm();
 		checkMissingRequiredFields(mapFromRegisterForm, errorCode);
@@ -69,7 +72,7 @@ public class RegisterServiceImpl implements RegisterService {
 		// In case of no error, save user to DB
 		if (Objects.equals(errorCode.errorCount(), 0)) {
 			final String hashedPassword = passwordEncoder.encode(mapFromRegisterForm.get(PASSWORD));
-			final UserEntity userEntityWithHashPasswordToSaveInDB = registerDTORequest.toUserEntityWithHashPasswordToSaveInDB(hashedPassword);
+			final UserModel userModelWithHashPasswordToSaveInDB = registerDTORequest.toUserEntityWithHashPasswordToSaveInDB(hashedPassword);
 			RegisterConfig registerConfig = RegisterConfig.builder()
 					.username(registerDTORequest.getRegisterForm().getUsername())
 					.password(registerDTORequest.getRegisterForm().getPassword())
@@ -89,7 +92,7 @@ public class RegisterServiceImpl implements RegisterService {
 			// Publish event
 			try {
 				eventPublisher.publishEvent(new OnRegistrationCompleteEvent(
-						userEntityWithHashPasswordToSaveInDB,
+						userModelWithHashPasswordToSaveInDB,
 						request.getLocale(),
 						request.getContextPath()));
 			} catch (Exception e) {
@@ -97,7 +100,7 @@ public class RegisterServiceImpl implements RegisterService {
 				throw new RuntimeException(e.getMessage());
 			}
 
-			return ResponseEntity.ok().body(GenericResponse
+			return ResponseEntity.ok().body(GenericResponseWrapper
 					.builder()
 					.success(Boolean.TRUE)
 					.data(registerResponse)
@@ -166,31 +169,32 @@ public class RegisterServiceImpl implements RegisterService {
 
 
 	@Override
-	public ResponseEntity<GenericResponse> confirmRegistration(String token, HttpServletRequest request) {
-		VerificationToken verificationToken = userService.getVerificationToken(token);
+	public ResponseEntity<GenericResponseWrapper> confirmRegistration(String token, HttpServletRequest request) {
+//		VerificationToken verificationToken = userService.getVerificationToken(token);
+		VerificationTokenModel verificationTokenModel = verificationTokenLogicService.getVerificationToken(token);
 		Locale locale = request.getLocale();
 
-		if (Objects.isNull(verificationToken)) {
+		if (Objects.isNull(verificationTokenModel)) {
 //			String message = messages.getMessage("auth.message.invalidToken", null, locale);
 			throw new RuntimeException("redirect:/badUser.html?lang=" + locale.getLanguage());
 		}
 
-		UserEntity user = verificationToken.getUser();
+		UserModel userModel = verificationTokenModel.getUserModel();
 		Calendar cal = Calendar.getInstance();
 
-		if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+		if ((verificationTokenModel.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
 //			String messageValue = messages.getMessage("auth.message.expired", null, locale)
 			throw new RuntimeException("redirect:/badUser.html?lang=" + locale.getLanguage());
 		}
 
-		userService.updateEnabledByUsername(Boolean.TRUE, user.getUsername());
+		userService.updateEnabledByUsername(Boolean.TRUE, userModel.getUsername());
 
 		ConfirmRegistrationResponse confirmRegistrationResponse = ConfirmRegistrationResponse.builder()
-				.message(String.format("User %s has been activated", user.getUsername()))
+				.message(String.format("User %s has been activated", userModel.getUsername()))
 				.data("redirect:/login.html?lang=" + request.getLocale().getLanguage())
 				.build();
 
-		return ResponseEntity.ok().body(GenericResponse
+		return ResponseEntity.ok().body(GenericResponseWrapper
 				.builder()
 				.success(Boolean.TRUE)
 				.data(confirmRegistrationResponse)

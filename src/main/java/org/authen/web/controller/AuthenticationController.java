@@ -5,10 +5,9 @@ import lombok.extern.log4j.Log4j2;
 import org.authen.web.dto.login.LoginRequestDTO;
 import org.authen.web.dto.logout.LogoutRequestDTO;
 import org.authen.web.service.AuthenticationService;
-import org.authen.exception.apiEx.GenericResponse;
+import org.authen.wapper.model.GenericResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.authen.web.controller.AuthenticationController.AUTHENTICATION_ENDPOINT;
@@ -36,13 +35,14 @@ public class AuthenticationController {
 
 
 	@PostMapping(value = LOGIN_ENDPOINT)
-	public ResponseEntity<GenericResponse> login(@RequestBody LoginRequestDTO request) {
+	public GenericResponseWrapper login(@RequestBody LoginRequestDTO request) {
+		log.info("#Login - request: {} ", request);
 		return authenticationService.login(request);
 	}
 
 	//TODO: Implement the logout method
 	@PostMapping(value = LOGOUT_ENDPOINT)
-	public ResponseEntity<GenericResponse> logout(@RequestBody LogoutRequestDTO request) {
+	public GenericResponseWrapper logout(@RequestBody LogoutRequestDTO request) {
 		return authenticationService.logout(request);
 	}
 

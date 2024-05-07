@@ -2,8 +2,8 @@ package org.authen.listener;
 
 import lombok.Getter;
 import lombok.Setter;
-import persistent.entity.UserEntity;
 import org.springframework.context.ApplicationEvent;
+import org.authen.level.service.model.UserModel;
 
 import java.util.Locale;
 
@@ -12,9 +12,9 @@ import java.util.Locale;
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
 	private String appUrl;
 	private Locale locale;
-	private UserEntity user;
+	private UserModel user;
 
-	public OnRegistrationCompleteEvent(UserEntity user, Locale locale, String appUrl) {
+	public OnRegistrationCompleteEvent(UserModel user, Locale locale, String appUrl) {
 		super(user);
 		this.user = user;
 		this.locale = locale;
