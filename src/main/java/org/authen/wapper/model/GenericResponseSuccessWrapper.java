@@ -10,18 +10,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GenericResponseWrapper {
+public class GenericResponseSuccessWrapper {
 	private Boolean success = Boolean.TRUE;
 	private Object data;
 
-	@lombok.Data
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class Data {
-		private String name;
-		private String message;
-		private Integer code;
-		private Integer status;
-	}
+//	@lombok.Data
+//	@AllArgsConstructor
+//	@NoArgsConstructor
+//	@Builder
+//	public static class Data {
+//		private String name;
+//		private String message;
+//		private Integer code;
+//		private Integer status;
+//	}
 }

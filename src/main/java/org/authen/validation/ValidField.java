@@ -13,8 +13,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = RequireFieldValidator.class)
 @Documented
-public @interface RequireField {
-	String message() default "Invalid email";
+public @interface ValidField {
+	String message() default "";
+	String code() default "";
 	Class<?>[] groups() default {};
 	Class<? extends Payload>[] payload() default {};
 }

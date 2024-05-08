@@ -1,9 +1,9 @@
 package org.authen.job.service;
 
-import org.authen.wapper.model.GenericResponseWrapper;
+import org.authen.wapper.model.GenericResponseSuccessWrapper;
 import org.springframework.http.ResponseEntity;
 
 public interface JobService {
-	ResponseEntity<GenericResponseWrapper> getCreatedJobs();
+	ResponseEntity<GenericResponseSuccessWrapper> getCreatedJobs();
 	Boolean cancelJobWithJobName(String jobName);
 }

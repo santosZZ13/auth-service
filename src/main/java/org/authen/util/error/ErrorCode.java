@@ -8,10 +8,10 @@ import java.util.*;
 public class ErrorCode {
 
 	private final Map<String, List<String>> errorMsg;
-	private final List<ErrorField> errorFields;
+	private final List<FieldErrorWrapper> fieldErrorWrappers;
 
 	public ErrorCode() {
-		this.errorFields = new ArrayList<>();
+		this.fieldErrorWrappers = new ArrayList<>();
 		this.errorMsg = new LinkedHashMap<>();
 	}
 
@@ -21,11 +21,11 @@ public class ErrorCode {
 
 
 	public void addErrorField(String errorCode, String field, String message) {
-		ErrorField errorField = new ErrorField();
-		errorField.setErrorCode(errorCode);
-		errorField.setField(field);
-		errorField.setMessage(message);
-		this.errorFields.add(errorField);
+		FieldErrorWrapper fieldErrorWrapper = new FieldErrorWrapper();
+		fieldErrorWrapper.setErrorCode(errorCode);
+		fieldErrorWrapper.setField(field);
+		fieldErrorWrapper.setMessage(message);
+		this.fieldErrorWrappers.add(fieldErrorWrapper);
 	}
 
 	public void addError(String errorCode, String errorMsg) {

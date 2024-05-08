@@ -1,59 +1,53 @@
 package org.authen.util.exceptionHandler;
 
 import org.authen.errors.api.ApiException;
-import org.authen.util.error.ErrorCode;
-import org.authen.util.error.ErrorField;
-import org.authen.util.converter.JsonConverter;
+import org.authen.util.error.FieldErrorWrapper;
 import org.authen.util.error.ResponseError;
-import org.authen.wapper.model.GenericResponseWrapper;
-import org.authen.web.exception.RegisterException;
+import org.authen.wapper.model.GenericResponseErrorWrapper;
+import org.authen.wapper.model.GenericResponseSuccessWrapper;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<Object> handAll(@NotNull Exception ex, WebRequest request) {
-		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+		GenericResponseErrorWrapper genericResponseErrorWrapper = new GenericResponseErrorWrapper(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+		return new ResponseEntity<>(genericResponseErrorWrapper, new HttpHeaders(), genericResponseErrorWrapper.getStatus());
 	}
 
 
-	@ExceptionHandler({RegisterException.class})
-	public ResponseEntity<Object> handCustomException(@NotNull Exception ex, WebRequest request) {
-		String message = ex.getMessage();
-		ErrorCode errorCode = JsonConverter.convertJsonToObject(message, ErrorCode.class);
-		List<ErrorField> errorFields = errorCode.getErrorFields();
-		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,"Error occurred", null);
-		apiError.setErrors(errorFields);
-		return new ResponseEntity<>(
-				apiError, new HttpHeaders(), apiError.getStatus());
-	}
+//	@ExceptionHandler({RegisterException.class})
+//	public ResponseEntity<Object> handCustomException(@NotNull Exception ex, WebRequest request) {
+//		String message = ex.getMessage();
+//		ErrorCode errorCode = JsonConverter.convertJsonToObject(message, ErrorCode.class);
+//		List<ErrorField> errorFields = errorCode.getErrorFields();
+//		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,"Error occurred", null);
+//		apiError.setErrors(errorFields);
+//		return new ResponseEntity<>(
+//				apiError, new HttpHeaders(), apiError.getStatus());
+//	}
 
 
-	@ExceptionHandler({RuntimeException.class})
-	public ResponseEntity<Object> handRuntimeException(@NotNull RuntimeException ex, WebRequest request) {
-		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "error occurred");
-		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
-	}
+//	@ExceptionHandler({RuntimeException.class})
+//	public ResponseEntity<Object> handRuntimeException(@NotNull RuntimeException ex, WebRequest request) {
+//		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "error occurred");
+//		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+//	}
 
 	@ExceptionHandler({ApiException.class})
 	public ResponseEntity<Object> handlerApiException(@NotNull ApiException ex, WebRequest request) {
@@ -65,7 +59,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 				.shortDesc(shortDesc)
 				.message(message)
 				.build();
-		return new ResponseEntity<>(GenericResponseWrapper.builder()
+		return new ResponseEntity<>(GenericResponseSuccessWrapper.builder()
 				.success(Boolean.FALSE)
 				.data(responseError)
 				.build(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
@@ -83,26 +77,35 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 //		return errors;
 //	}
 
-
-	@Override
-	protected @NotNull ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return super.handleBindException(ex, headers, status, request);
-	}
-
 	@Override
 	protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
 																		   HttpStatus status, WebRequest request) {
-
-		MethodParameter parameter = ex.getParameter();
 		BindingResult bindingResult = ex.getBindingResult();
-
-		List<ObjectError> allErrors = bindingResult.getAllErrors();
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+		List<FieldErrorWrapper> fieldErrorWrappers = new ArrayList<>();
 
-		FieldError fieldError = bindingResult.getFieldError();
+		fieldErrors.forEach(fieldError -> {
+			FieldErrorWrapper fieldErrorWrapper = new FieldErrorWrapper();
+			String errorCode = getErrorCode(fieldError.getArguments());
+			fieldErrorWrapper.setErrorCode(errorCode);
+			fieldErrorWrapper.setField(fieldError.getField());
+			fieldErrorWrapper.setMessage(fieldError.getDefaultMessage());
+			fieldErrorWrappers.add(fieldErrorWrapper);
+		});
 
+		return ResponseEntity.badRequest().body(GenericResponseErrorWrapper
+				.builder()
+				.errors(fieldErrorWrappers)
+				.message("Validation failed")
+				.status(HttpStatus.BAD_REQUEST)
+				.build());
+	}
 
-		return super.handleMethodArgumentNotValid(ex, headers, status, request);
+	private String getErrorCode(Object[] arguments) {
+		if (Objects.nonNull(arguments) && arguments.length > 0) {
+			return arguments[1].toString();
+		}
+		return null;
 	}
 }
 

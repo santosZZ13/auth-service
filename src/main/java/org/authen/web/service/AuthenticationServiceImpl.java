@@ -11,7 +11,7 @@ import org.authen.web.dto.login.LoginResponseDTO;
 import org.authen.web.dto.logout.LogoutRequestDTO;
 import org.authen.filter.AfterAuthenticationSuccessHandler;
 import org.authen.jwt.JwtTokenService;
-import org.authen.wapper.model.GenericResponseWrapper;
+import org.authen.wapper.model.GenericResponseSuccessWrapper;
 import org.authen.service.user.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,7 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
 	@Override
-	public GenericResponseWrapper login(LoginRequestDTO loginRequest) {
+	public GenericResponseSuccessWrapper login(LoginRequestDTO loginRequest) {
 		final String username = loginRequest.getLoginForm().getUsername();
 		final String password = loginRequest.getLoginForm().getPassword();
 		UserModel userModel = userService.getUserModelByUsername(username);
@@ -69,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 			Map<String, String> tokens = jwtTokenService.generateTokens(authenticate, userModel);
 
-			return GenericResponseWrapper
+			return GenericResponseSuccessWrapper
 					.builder()
 					.data(LoginResponseDTO
 							.builder()
@@ -88,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public GenericResponseWrapper logout(LogoutRequestDTO request) {
+	public GenericResponseSuccessWrapper logout(LogoutRequestDTO request) {
 		return null;
 	}
 

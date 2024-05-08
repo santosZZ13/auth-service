@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.authen.level.service.model.UserModel;
-import org.authen.validation.RequireField;
+import org.authen.validation.ValidField;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -41,17 +40,22 @@ public class RegisterDTORequest {
 	@Valid
 	public static class RegisterForm {
 
-		@RequireField(message = "Mandatory parameter {%s} is not specified")
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String username;
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String password;
-//		private String passwordConfirm;
+		//	private String passwordConfirm;
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String email;
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String type;
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String role;
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String locate;
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String firstName;
-//		@NotNull(message = "Mandatory parameter {%s} is not specified")
-//		@NotBlank(message = "Mandatory parameter {%s} is not specified")
+		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String lastName;
 //		@JsonIgnore
 //		public String getPassword() {

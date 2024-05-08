@@ -1,17 +1,21 @@
 package org.authen.validation;
 
+import lombok.extern.log4j.Log4j2;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Objects;
 
-public class RequireFieldValidator implements ConstraintValidator<RequireField, String> {
-
+public class RequireFieldValidator implements ConstraintValidator<ValidField, String> {
 	@Override
-	public void initialize(RequireField constraintAnnotation) {
+	public void initialize(ValidField constraintAnnotation) {
 		ConstraintValidator.super.initialize(constraintAnnotation);
 	}
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		return false;
+		return !Objects.isNull(value) &&
+				!value.isEmpty() &&
+				!value.isBlank();
 	}
 }

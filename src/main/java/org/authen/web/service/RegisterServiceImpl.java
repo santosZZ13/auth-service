@@ -2,7 +2,7 @@ package org.authen.web.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.authen.wapper.model.GenericResponseWrapper;
+import org.authen.wapper.model.GenericResponseSuccessWrapper;
 import org.authen.web.exception.RegisterException;
 import org.authen.listener.OnRegistrationCompleteEvent;
 import org.authen.service.user.UserService;
@@ -15,18 +15,14 @@ import org.authen.web.dto.register.RegisterDTORequest;
 import org.authen.web.dto.register.RegisterDTOResponse;
 import org.jetbrains.annotations.Contract;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.authen.level.service.model.UserModel;
 import org.authen.level.service.model.VerificationTokenModel;
 import org.authen.level.service.verificationToken.VerificationTokenLogicServiceImpl;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
@@ -62,7 +58,7 @@ public class RegisterServiceImpl implements RegisterService {
 
 
 	@Override
-	public ResponseEntity<GenericResponseWrapper> registerAccount(RegisterDTORequest registerDTORequest) {
+	public ResponseEntity<GenericResponseSuccessWrapper> registerAccount(RegisterDTORequest registerDTORequest) {
 		ErrorCode errorCode = new ErrorCode();
 		Map<String, String> mapFromRegisterForm = registerDTORequest.toMapFromRegisterForm();
 
@@ -107,7 +103,7 @@ public class RegisterServiceImpl implements RegisterService {
 				throw new RuntimeException(e.getMessage());
 			}
 
-			return ResponseEntity.ok().body(GenericResponseWrapper
+			return ResponseEntity.ok().body(GenericResponseSuccessWrapper
 					.builder()
 					.success(Boolean.TRUE)
 					.data(registerResponse)
@@ -176,7 +172,7 @@ public class RegisterServiceImpl implements RegisterService {
 
 
 	@Override
-	public ResponseEntity<GenericResponseWrapper> confirmRegistration(String token, HttpServletRequest request) {
+	public ResponseEntity<GenericResponseSuccessWrapper> confirmRegistration(String token, HttpServletRequest request) {
 //		VerificationToken verificationToken = userService.getVerificationToken(token);
 		VerificationTokenModel verificationTokenModel = verificationTokenLogicService.getVerificationToken(token);
 		Locale locale = request.getLocale();
@@ -201,7 +197,7 @@ public class RegisterServiceImpl implements RegisterService {
 				.data("redirect:/login.html?lang=" + request.getLocale().getLanguage())
 				.build();
 
-		return ResponseEntity.ok().body(GenericResponseWrapper
+		return ResponseEntity.ok().body(GenericResponseSuccessWrapper
 				.builder()
 				.success(Boolean.TRUE)
 				.data(confirmRegistrationResponse)
