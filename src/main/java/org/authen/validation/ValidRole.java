@@ -1,6 +1,6 @@
 package org.authen.validation;
 
-import org.authen.validation.impl.RequireFieldValidator;
+import org.authen.validation.impl.RoleValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -13,9 +13,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = RequireFieldValidator.class)
+@Constraint(validatedBy = RoleValidator.class)
 @Documented
-public @interface ValidField {
+public @interface ValidRole {
 	String message() default "";
 	String code() default "";
 	Class<?>[] groups() default {};

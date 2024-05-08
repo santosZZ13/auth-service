@@ -1,6 +1,7 @@
-package org.authen.validation;
+package org.authen.validation.impl;
 
-import lombok.extern.log4j.Log4j2;
+
+import org.authen.validation.ValidField;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

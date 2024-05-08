@@ -5,10 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.authen.level.service.model.UserModel;
-import org.authen.validation.ValidField;
+import org.authen.validation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,21 +40,33 @@ public class RegisterDTORequest {
 	public static class RegisterForm {
 
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
+		@ValidUserName(message = "Invalid value specified for parameter {%s}.", code = "C1010004")
 		private String username;
+
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String password;
 		//	private String passwordConfirm;
+
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
+		@ValidEmail(message = "Invalid value specified for parameter {%s}.", code = "C1010004")
 		private String email;
+
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String type;
+
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
+		@ValidRole(message = "Invalid value specified for parameter {%s}.", code = "C1010004")
 		private String role;
+
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
 		private String locate;
+
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
+		@ValidNormalField(message = "Invalid value specified for parameter {%s}.", code = "C1010004")
 		private String firstName;
+
 		@ValidField(message = "Mandatory field {%s} is not specified", code = "C1010003")
+		@ValidNormalField(message = "Invalid value specified for parameter {%s}.", code = "C1010004")
 		private String lastName;
 //		@JsonIgnore
 //		public String getPassword() {
@@ -63,20 +74,8 @@ public class RegisterDTORequest {
 //		}
 	}
 
-	public Map<String, String> toMapFromRegisterForm() {
-		Map<String, String> map = new LinkedHashMap<>();
-		map.put(USERNAME, this.registerForm.getUsername());
-		map.put(PASSWORD, this.registerForm.getPassword());
-		map.put(EMAIL, this.registerForm.getEmail());
-		map.put(TYPE, this.registerForm.getType());
-		map.put(ROLE, this.registerForm.getRole());
-		map.put(LOCATE, this.registerForm.getLocate());
-		map.put(FIRST_NAME, this.registerForm.getFirstName());
-		map.put(LAST_NAME, this.registerForm.getLastName());
-		return map;
-	}
 
-	public UserModel toUserEntityWithHashPasswordToSaveInDB(final String hashedPassword) {
+	public UserModel toUserModelWithHashPasswordToSaveInDB(final String hashedPassword) {
 		return UserModel.builder()
 				.username(this.registerForm.getUsername())
 				.password(hashedPassword)
