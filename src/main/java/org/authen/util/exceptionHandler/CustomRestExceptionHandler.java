@@ -8,16 +8,24 @@ import org.authen.util.error.ResponseError;
 import org.authen.wapper.model.GenericResponseWrapper;
 import org.authen.web.exception.RegisterException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -61,6 +69,40 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 				.success(Boolean.FALSE)
 				.data(responseError)
 				.build(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+	}
+
+//	@ResponseStatus(HttpStatus.BAD_REQUEST)
+//	@ExceptionHandler(MethodArgumentNotValidException.class)
+//	public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+//		Map<String, String> errors = new HashMap<>();
+//		ex.getBindingResult().getAllErrors().forEach((error) -> {
+//			String fieldName = ((FieldError) error).getField();
+//			String errorMessage = error.getDefaultMessage();
+//			errors.put(fieldName, errorMessage);
+//		});
+//		return errors;
+//	}
+
+
+	@Override
+	protected @NotNull ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		return super.handleBindException(ex, headers, status, request);
+	}
+
+	@Override
+	protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+																		   HttpStatus status, WebRequest request) {
+
+		MethodParameter parameter = ex.getParameter();
+		BindingResult bindingResult = ex.getBindingResult();
+
+		List<ObjectError> allErrors = bindingResult.getAllErrors();
+		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+
+		FieldError fieldError = bindingResult.getFieldError();
+
+
+		return super.handleMethodArgumentNotValid(ex, headers, status, request);
 	}
 }
 

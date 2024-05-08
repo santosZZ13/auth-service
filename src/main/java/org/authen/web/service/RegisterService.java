@@ -8,6 +8,6 @@ import org.springframework.validation.Errors;
 import javax.servlet.http.HttpServletRequest;
 
 public interface RegisterService {
-	ResponseEntity<GenericResponseWrapper> registerAccount(RegisterDTORequest registerDTORequest, HttpServletRequest request, Errors errors);
+	ResponseEntity<GenericResponseWrapper> registerAccount(RegisterDTORequest registerDTORequest);
 	ResponseEntity<GenericResponseWrapper> confirmRegistration(String token, HttpServletRequest request);
 }

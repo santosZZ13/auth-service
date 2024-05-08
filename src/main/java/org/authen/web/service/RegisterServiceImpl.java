@@ -15,6 +15,7 @@ import org.authen.web.dto.register.RegisterDTORequest;
 import org.authen.web.dto.register.RegisterDTOResponse;
 import org.jetbrains.annotations.Contract;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import org.authen.level.service.model.UserModel;
 import org.authen.level.service.model.VerificationTokenModel;
 import org.authen.level.service.verificationToken.VerificationTokenLogicServiceImpl;
 import org.springframework.validation.Errors;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -60,16 +62,12 @@ public class RegisterServiceImpl implements RegisterService {
 
 
 	@Override
-	public ResponseEntity<GenericResponseWrapper> registerAccount(RegisterDTORequest registerDTORequest, HttpServletRequest request, Errors errors) {
+	public ResponseEntity<GenericResponseWrapper> registerAccount(RegisterDTORequest registerDTORequest) {
 		ErrorCode errorCode = new ErrorCode();
 		Map<String, String> mapFromRegisterForm = registerDTORequest.toMapFromRegisterForm();
 
-
-
 		checkMissingRequiredFields(mapFromRegisterForm, errorCode);
 		validateUser(mapFromRegisterForm, errorCode);
-
-
 
 //		if (userService.isUsernameExist(mapFromRegisterForm.get(USERNAME))) {1
 //			errorCode.addError(ALREADY_USER_CODE, String.format(ALREADY_USER_MESSAGE, USERNAME));
@@ -80,28 +78,30 @@ public class RegisterServiceImpl implements RegisterService {
 		if (Objects.equals(errorCode.errorCount(), 0)) {
 			final String hashedPassword = passwordEncoder.encode(mapFromRegisterForm.get(PASSWORD));
 			final UserModel userModelWithHashPasswordToSaveInDB = registerDTORequest.toUserEntityWithHashPasswordToSaveInDB(hashedPassword);
-//			RegisterConfig registerConfig = RegisterConfig.builder()
-//					.username(registerDTORequest.getRegisterForm().getUsername())
-//					.password(registerDTORequest.getRegisterForm().getPassword())
-//					.email(registerDTORequest.getRegisterForm().getEmail())
-//					.type(registerDTORequest.getRegisterForm().getType())
-//					.role(registerDTORequest.getRegisterForm().getRole())
-//					.locate(registerDTORequest.getRegisterForm().getLocate())
-//					.firstName(registerDTORequest.getRegisterForm().getFirstName())
-//					.lastName(registerDTORequest.getRegisterForm().getLastName())
-//					.build();
+			RegisterConfig registerConfig = RegisterConfig.builder()
+					.username(registerDTORequest.getRegisterForm().getUsername())
+					.password(registerDTORequest.getRegisterForm().getPassword())
+					.email(registerDTORequest.getRegisterForm().getEmail())
+					.type(registerDTORequest.getRegisterForm().getType())
+					.role(registerDTORequest.getRegisterForm().getRole())
+					.locate(registerDTORequest.getRegisterForm().getLocate())
+					.firstName(registerDTORequest.getRegisterForm().getFirstName())
+					.lastName(registerDTORequest.getRegisterForm().getLastName())
+					.build();
 			RegisterDTOResponse registerResponse = RegisterDTOResponse.builder()
-					.registerConfig(null)
+					.registerConfig(registerConfig)
 					.build();
 
 //			userService.saveUser(userEntityWithHashPasswordToSaveInDB);
 
 			// Publish event
 			try {
+//				final Locale locale = LocaleContextHolder.getLocale();
+//				final String contextPath = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 				eventPublisher.publishEvent(new OnRegistrationCompleteEvent(
 						userModelWithHashPasswordToSaveInDB,
-						request.getLocale(),
-						request.getContextPath()));
+						null,
+						null));
 			} catch (Exception e) {
 				log.info("Error: {}", e.getMessage());
 				throw new RuntimeException(e.getMessage());

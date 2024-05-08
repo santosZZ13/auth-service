@@ -1,17 +1,15 @@
 {
-    "status": "error",
-    "requiredError": [
+    "message": "Error occurred",
+    "errors": [
         {
-            "field": "email",
-            "message": "Email is required",
-            "code": "C1010003"
+            "errorCode": "C1010003",
+            "field": "username",
+            "message": "Mandatory parameter {username} is not specified"
         },
         {
+            "errorCode": "C1010003",
             "field": "password",
-            "message": "Password is required",
-            "code": "C1010003"
+            "message": "Mandatory parameter {password} is not specified"
         }
     ]
 }
-
-
