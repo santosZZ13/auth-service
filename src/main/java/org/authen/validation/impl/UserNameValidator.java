@@ -4,6 +4,7 @@ import org.authen.validation.ValidUserName;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Objects;
 
 public class UserNameValidator implements ConstraintValidator<ValidUserName, String> {
 	@Override
@@ -20,6 +21,6 @@ public class UserNameValidator implements ConstraintValidator<ValidUserName, Str
 	 */
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		return value.matches("^[^<>\\[\\] :\"]{1,20}$");
+		return Objects.nonNull(value) && value.matches("^[^<>\\[\\] :\"]{1,20}$");
 	}
 }

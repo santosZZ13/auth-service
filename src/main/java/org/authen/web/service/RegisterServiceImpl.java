@@ -9,6 +9,8 @@ import org.authen.web.dto.register.ConfirmRegistrationResponse;
 import org.authen.web.dto.register.RegisterConfig;
 import org.authen.web.dto.register.RegisterDTORequest;
 import org.authen.web.dto.register.RegisterDTOResponse;
+import org.authen.web.exception.RegisterEventException;
+import org.authen.web.exception.RegisterException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -36,20 +37,22 @@ public class RegisterServiceImpl implements RegisterService {
 	private final VerificationTokenLogicServiceImpl verificationTokenLogicService;
 
 	@Override
-	public ResponseEntity<GenericResponseSuccessWrapper> registerAccount(RegisterDTORequest registerDTORequest) {
+	public GenericResponseSuccessWrapper registerAccount(RegisterDTORequest registerDTORequest) {
+
+		log.info("#registerAccount - registerDTORequest: {} ", registerDTORequest);
+		String requestUserName = registerDTORequest.getRegisterForm().getUsername();
+
+		if (userService.isUsernameExist(requestUserName)) {
+			throw new RegisterException("Username is already Exist", "XXX", String.format("User: {%s}", requestUserName));
+		}
+
 		try {
-			//		if (userService.isUsernameExist(mapFromRegisterForm.get(USERNAME))) {1
-//			errorCode.addError(ALREADY_USER_CODE, String.format(ALREADY_USER_MESSAGE, USERNAME));
-//			errorCode.addErrorField(ALREADY_USER_CODE, USERNAME, String.format(ALREADY_USER_MESSAGE, USERNAME));
-//		}
 			final String hashedPassword = passwordEncoder.encode(registerDTORequest.getRegisterForm().getPassword());
 			final UserModel userModelWithHashPasswordToSaveInDB = registerDTORequest.toUserModelWithHashPasswordToSaveInDB(hashedPassword);
 			final RegisterConfig registerConfig = new RegisterConfig(userModelWithHashPasswordToSaveInDB);
 			RegisterDTOResponse registerResponse = RegisterDTOResponse.builder()
 					.registerConfig(registerConfig)
 					.build();
-
-//			userService.saveUser(userEntityWithHashPasswordToSaveInDB);
 
 			// Publish event
 			try {
@@ -59,20 +62,19 @@ public class RegisterServiceImpl implements RegisterService {
 						userModelWithHashPasswordToSaveInDB,
 						locale,
 						contextPath));
+
 			} catch (Exception e) {
-				log.info("Error: {}", e.getMessage());
-				throw new RuntimeException(e.getMessage());
+				log.info("#registerAccount - Error: {}", e.getMessage());
+				throw new RegisterEventException("Error occurred while sending the token to email", "XXX", String.format("User: {%s}", requestUserName));
 			}
 
-			return ResponseEntity.ok().body(GenericResponseSuccessWrapper
+			return GenericResponseSuccessWrapper
 					.builder()
-					.success(Boolean.TRUE)
 					.data(registerResponse)
-					.build()
-			);
+					.build();
 		} catch (Exception e) {
-			log.info("Error: {}", e.getMessage());
-			throw new RuntimeException(e.getMessage());
+			log.info("#registerAccount - Error: {}", e.getMessage());
+			throw e;
 		}
 	}
 

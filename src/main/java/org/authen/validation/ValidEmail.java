@@ -1,5 +1,6 @@
 package org.authen.validation;
 
+import org.authen.validation.impl.EmailValidator;
 import org.authen.validation.impl.RequireFieldValidator;
 
 import javax.validation.Constraint;
@@ -13,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = RequireFieldValidator.class)
+@Constraint(validatedBy = EmailValidator.class)
 @Documented
 public @interface ValidEmail {
 	String message() default "";

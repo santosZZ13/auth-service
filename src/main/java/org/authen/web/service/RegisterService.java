@@ -7,6 +7,6 @@ import org.springframework.http.ResponseEntity;
 import javax.servlet.http.HttpServletRequest;
 
 public interface RegisterService {
-	ResponseEntity<GenericResponseSuccessWrapper> registerAccount(RegisterDTORequest registerDTORequest);
+	GenericResponseSuccessWrapper registerAccount(RegisterDTORequest registerDTORequest);
 	ResponseEntity<GenericResponseSuccessWrapper> confirmRegistration(String token, HttpServletRequest request);
 }

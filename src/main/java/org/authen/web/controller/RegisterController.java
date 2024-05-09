@@ -23,7 +23,7 @@ public class RegisterController {
 	private final RegisterService registerService;
 
 	@PostMapping(value = "/registration")
-	public ResponseEntity<GenericResponseSuccessWrapper> registerAccount(@RequestBody @Valid RegisterDTORequest registerDTORequest) {
+	public GenericResponseSuccessWrapper registerAccount(@RequestBody @Valid RegisterDTORequest registerDTORequest) {
 		log.info("#Register - request: {} ", registerDTORequest);
 		return registerService.registerAccount(registerDTORequest);
 	}

@@ -4,6 +4,7 @@ import org.authen.validation.ValidNormalField;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Objects;
 
 public class NormalFieldValidator implements ConstraintValidator<ValidNormalField, String> {
 	@Override
@@ -19,6 +20,6 @@ public class NormalFieldValidator implements ConstraintValidator<ValidNormalFiel
 	 */
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		return value.matches("^[^<>\\[\\]]{1,30}$");
+		return Objects.nonNull(value) && value.matches("^[^<>\\[\\]]{1,30}$");
 	}
 }

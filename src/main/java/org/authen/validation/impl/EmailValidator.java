@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Objects;
 
 public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
 	@Override
@@ -26,7 +27,8 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
 	 * @return true if the email is valid, false otherwise
 	 */
 	@Override
-	public boolean isValid(@NotNull String value, ConstraintValidatorContext context) {
-		return value.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+	public boolean isValid( String value, ConstraintValidatorContext context) {
+		return Objects.nonNull(value) && value.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+
 	}
 }

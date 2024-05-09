@@ -8,13 +8,16 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class GenericResponseSuccessWrapper {
-	private Boolean success = Boolean.TRUE;
+	private Boolean success;
 	private Object data;
 
-//	@lombok.Data
+	public GenericResponseSuccessWrapper() {
+		this.success = Boolean.TRUE;
+	}
+
+	//	@lombok.Data
 //	@AllArgsConstructor
 //	@NoArgsConstructor
 //	@Builder

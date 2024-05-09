@@ -5,6 +5,7 @@ import org.authen.util.error.FieldErrorWrapper;
 import org.authen.util.error.ResponseError;
 import org.authen.wapper.model.GenericResponseErrorWrapper;
 import org.authen.wapper.model.GenericResponseSuccessWrapper;
+import org.authen.web.exception.RegisterException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,21 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(genericResponseErrorWrapper, new HttpHeaders(), genericResponseErrorWrapper.getStatus());
 	}
 
-
+	@ExceptionHandler({ApiException.class, RegisterException.class})
+	public ResponseEntity<Object> handlerApiException(@NotNull ApiException ex, WebRequest request) {
+		final String code = ex.getCode();
+		final String shortDesc = ex.getShortDesc();
+		final String message = ex.getMessage();
+		ResponseError responseError = ResponseError.builder()
+				.code(code)
+				.shortDesc(shortDesc)
+				.message(message)
+				.build();
+		return new ResponseEntity<>(GenericResponseSuccessWrapper.builder()
+				.success(Boolean.FALSE)
+				.data(responseError)
+				.build(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+	}
 //	@ExceptionHandler({RegisterException.class})
 //	public ResponseEntity<Object> handCustomException(@NotNull Exception ex, WebRequest request) {
 //		String message = ex.getMessage();
@@ -49,21 +64,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 //		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 //	}
 
-	@ExceptionHandler({ApiException.class})
-	public ResponseEntity<Object> handlerApiException(@NotNull ApiException ex, WebRequest request) {
-		final String code = ex.getCode();
-		final String shortDesc = ex.getShortDesc();
-		final String message = ex.getMessage();
-		ResponseError responseError = ResponseError.builder()
-				.code(code)
-				.shortDesc(shortDesc)
-				.message(message)
-				.build();
-		return new ResponseEntity<>(GenericResponseSuccessWrapper.builder()
-				.success(Boolean.FALSE)
-				.data(responseError)
-				.build(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-	}
+
 
 //	@ResponseStatus(HttpStatus.BAD_REQUEST)
 //	@ExceptionHandler(MethodArgumentNotValidException.class)

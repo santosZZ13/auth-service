@@ -8,29 +8,15 @@ import org.authen.level.service.model.UserModel;
 import org.authen.validation.*;
 
 import javax.validation.Valid;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class RegisterDTORequest {
-
-	public static final String USERNAME = "username";
-	public static final String PASSWORD = "password";
-	public static final String EMAIL = "email";
-	public static final String TYPE = "type";
-	public static final String ROLE = "role";
-	public static final String LOCATE = "locate";
-	public static final String FIRST_NAME = "firstName";
-	public static final String LAST_NAME = "lastName";
 
 	@Valid
 	private RegisterForm registerForm;
-
-	public RegisterDTORequest() {
-		this.registerForm = new RegisterForm();
-	}
 
 	@Builder
 	@Data

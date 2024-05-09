@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
 	UserDetails toUserDetails(UserModel userModel);
-//	Boolean isUsernameExist(String username);
+	Boolean isUsernameExist(String username);
 	List<GrantedAuthority> getAuthorities(List<String> roles);
 	void updateEnabledByUsername(Boolean aTrue, String username);
 	UserModel getUserModelByUsername(String username);

@@ -1,8 +1,10 @@
 package org.authen.errors.api;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ApiException extends RuntimeException {
 	private final String code;
 	private final String shortDesc;

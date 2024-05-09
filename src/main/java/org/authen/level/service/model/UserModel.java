@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.authen.level.persistent.entity.UserEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -23,8 +24,12 @@ public class UserModel {
 	private String locate;
 	private String firstName;
 	private String lastName;
-	private Date createdAt;
-	private Date updatedAt;
+
+	private String createdBy;
+	private String modifiedBy;
+
+	private LocalDateTime createDate;
+	private LocalDateTime modifiedDate;
 
 	public UserModel(UserEntity userEntity) {
 		this.id = userEntity.getId();
@@ -37,8 +42,10 @@ public class UserModel {
 		this.locate = userEntity.getLocate();
 		this.firstName = userEntity.getFirstName();
 		this.lastName = userEntity.getLastName();
-		this.createdAt = userEntity.getCreatedAt();
-		this.updatedAt = userEntity.getUpdatedAt();
+		this.createdBy = userEntity.getCreatedBy();
+		this.modifiedBy = userEntity.getModifiedBy();
+		this.createDate = userEntity.getCreatedDate();
+		this.modifiedDate = userEntity.getModifiedDate();
 	}
 
 	public UserEntity toUserEntity() {
@@ -49,12 +56,15 @@ public class UserModel {
 		userEntity.setRole(this.role);
 		userEntity.setEnabled(this.enabled);
 		userEntity.setEmail(this.email);
+		userEntity.setEmail(this.email);
 		userEntity.setType(this.type);
 		userEntity.setLocate(this.locate);
 		userEntity.setFirstName(this.firstName);
 		userEntity.setLastName(this.lastName);
-		userEntity.setCreatedAt(this.createdAt);
-		userEntity.setUpdatedAt(this.updatedAt);
+//		userEntity.setCreatedBy(this.createdBy);
+//		userEntity.setModifiedBy(this.modifiedBy);
+//		userEntity.setCreatedDate(this.createDate);
+//		userEntity.setModifiedDate(this.modifiedDate);
 		return userEntity;
 	}
 }
