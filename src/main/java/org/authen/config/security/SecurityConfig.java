@@ -2,7 +2,6 @@ package org.authen.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.authen.config.BasicAuthProperties;
 import org.authen.filter.AfterAuthenticationSuccessHandler;
 import org.authen.filter.GatewayProperties;
 import org.authen.filter.GenericResponseFilter;

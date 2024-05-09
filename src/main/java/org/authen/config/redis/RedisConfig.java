@@ -1,4 +1,4 @@
-package org.authen.config;
+package org.authen.config.redis;
 
 
 import org.springframework.beans.factory.annotation.Value;

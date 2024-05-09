@@ -1,4 +1,4 @@
-package org.authen.config;
+package org.authen.config.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.userdetails.User;
