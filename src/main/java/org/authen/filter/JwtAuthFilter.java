@@ -60,7 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				return;
 			}
 
-			if (Objects.nonNull(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
+			if (Objects.nonNull(userName) && authentication == null) {
 				UserModel byUsername = userService.getUserModelByUsername(userName);
 				UserDetails userDetails = userService.toUserDetails(byUsername);
 
