@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.authen.level.service.model.UserModel;
 import org.authen.enums.AuthConstants;
 import org.authen.util.error.ErrorCode;
+import org.authen.util.jwt.JwtUtils;
 import org.authen.web.exception.LoginException;
 import org.authen.web.dto.login.LoginRequestDTO;
 import org.authen.web.dto.login.LoginResponseDTO;
@@ -35,28 +36,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenService jwtTokenService;
 	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
-
+	private final JwtUtils jwtUtils;
 
 
 	@Override
 	public GenericResponseSuccessWrapper login(LoginRequestDTO loginRequest) {
+
 		final String username = loginRequest.getLoginForm().getUsername();
 		final String password = loginRequest.getLoginForm().getPassword();
-		UserModel userModel = userService.getUserModelByUsername(username);
-		ErrorCode errorCode = new ErrorCode();
 
-		if (Objects.isNull(userModel)) {
-//			errorCode.addErrorField("XXXX", "XXX", String.format("User with username {%s} not found", username));
-//			String errorCodeInString = JsonConverter.convertToJsonString(errorCode);
-//			throw new RegisterException(errorCodeInString);
-//			throw new LoginException("123", "Cannot ", "21312");
-			throw new LoginException("Not found the user in our system", "XXX", String.format("User: %s", username));
-		}
 
 		Authentication authenticate;
 
 		try {
-			Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, userService.getAuthorities(List.of(userModel.getRole())));
+			Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
 			authenticate = authenticationManager.authenticate(authentication);
 
 			if (authenticate.isAuthenticated()) {
@@ -66,8 +59,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				// TODO: Implement this method in other thread to avoid blocking the main thread.
 				afterAuthenticationSuccessHandler.onAuthenticationSuccess(servletRequest, servletResponse, authenticate);
 			}
+			Map<String, String> tokens = jwtUtils.generateTokens(authenticate);
 
-			Map<String, String> tokens = jwtTokenService.generateTokens(authenticate, userModel);
+//			Map<String, String> tokens = jwtTokenService.generateTokens(authenticate);
 
 			return GenericResponseSuccessWrapper
 					.builder()
@@ -86,6 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			throw new LoginException("Invalid user or password", "XXX", String.format("User: %s", username));
 		}
 	}
+
 
 	@Override
 	public GenericResponseSuccessWrapper logout(LogoutRequestDTO request) {

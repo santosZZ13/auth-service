@@ -67,11 +67,9 @@ api-gateway:
         "[/api/**]" : ${api-gateway.service-1.host}:${api-gateway.service-1.port}
 #        "[/swagger-ui/**]": ${api-gateway.host}:${api-gateway.port}
 
-auth:
-  users:
-    loginadmin:
-      role: admin
-      password: loginpass
-    bookadmin:
-      role: USER
-      password: bookpass
+
+santos:
+    jwt:
+        secret: 4261656C64756E67.4261656C64756E67
+        access_token_expiration_second: 1800 # 30 minutes
+        refresh_token_expiration_second: 3600

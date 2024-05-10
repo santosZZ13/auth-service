@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Component
 public interface JwtTokenService {
-	Map<String, String> generateTokens(Authentication authentication, UserModel userModel);
+	Map<String, String> generateTokens(Authentication authentication);
 	Claims getTokenBody(String token);
 	default String getTokenFromRequest(HttpServletRequest request) {
 		return "";

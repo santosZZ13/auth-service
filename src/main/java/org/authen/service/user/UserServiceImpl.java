@@ -3,6 +3,11 @@ package org.authen.service.user;
 import lombok.AllArgsConstructor;
 import org.authen.enums.AuthConstants;
 import org.authen.level.service.model.UserModel;
+import org.authen.web.dto.login.LoginRequestDTO;
+import org.authen.web.exception.LoginException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
@@ -22,10 +27,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
 		final UserModel userModelByUsername = this.getUserModelByUsername(username);
 
 		if (Objects.isNull(userModelByUsername)) {
-			throw new UsernameNotFoundException("User not found");
+			throw new LoginException("Not found the user in our system", "XXX", String.format("User: %s", username));
 		}
 
 		return User
@@ -40,6 +46,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	}
 
 
+
 	@Override
 	public UserDetails toUserDetails(UserModel userModel) {
 		return User
@@ -52,8 +59,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 				.accountLocked(false)
 				.build();
 	}
-
-
 
 
 	@Override
