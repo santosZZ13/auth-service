@@ -12,9 +12,12 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -93,7 +96,9 @@ public class SecurityConfig {
 							.antMatchers(null, ADMIN_WHITELIST).hasAnyRole(ADMIN_ROLE_NAME)
 							.antMatchers(null, TEST_WHITELIST).hasRole("USER")
 							.anyRequest().authenticated();
-				});
+				})
+				.oauth2ResourceServer(oauth2 -> oauth2
+						.jwt(Customizer.withDefaults()));
 //				.formLogin(httpSecurityFormLoginConfigurer ->
 //						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
 //								.successHandler(afterAuthenticationSuccessHandler)

@@ -58,6 +58,15 @@ spring:
       platform: mysql
       mode: always
 
+
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/
+
+
 # API Gateway Configuration
 api-gateway:
     service-1:
@@ -73,3 +82,5 @@ santos:
         secret: 4261656C64756E67.4261656C64756E67
         access_token_expiration_second: 1800 # 30 minutes
         refresh_token_expiration_second: 3600
+
+
