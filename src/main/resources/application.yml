@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 
 spring:
   application:
@@ -62,9 +62,24 @@ spring:
 
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:8080/
+      client:
+        registration:
+          google:
+            clientId: 773619103626-c457k0qqgip96ej65846p61j6ij47fcs.apps.googleusercontent.com
+            clientSecret: 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
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+#            client-authentication-method: basic
+#            provider: google
+            scope:
+              - openid
+              - profile
+              - email
+
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+#            client-name: Google
 
 
 # API Gateway Configuration

@@ -6,6 +6,7 @@ import org.authen.filter.AfterAuthenticationSuccessHandler;
 import org.authen.filter.GatewayProperties;
 import org.authen.filter.GenericResponseFilter;
 import org.authen.filter.JwtAuthFilter;
+import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.service.user.UserServiceImpl;
 import org.authen.errors.security.UserAuthenticationErrorHandler;
 import org.jetbrains.annotations.NotNull;
@@ -38,17 +39,19 @@ public class SecurityConfig {
 
 	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
 	private final UserServiceImpl userServiceImpl;
-	private final GatewayProperties gatewayProperties;
-	private final BasicAuthProperties props;
 	private final JwtAuthFilter jwtAuthFilter;
 	//	private final GatewayServletFilter gatewayServletFilter;
 //	private final CustomHeaderValidatorFilter customHeaderValidatorFilter;
+	private final OAuth2UserServiceImpl oAuth2UserService;
+
+
 	public static final String[] USER_WHITELIST = {"/api/user/**"};
 	public static final String[] TEST_WHITELIST = {"/api/test/**"};
 	public static final String[] ADMIN_WHITELIST = {"/api/admin/**"};
 	public static final String[] PUBLIC_WHITELIST = {"/api/public/**"};
 	public static final String[] PRIVATE_WHITELIST = {"/api/private/**"};
 	public static final String[] AUTH_WHITELIST = {"/api/auth/**"};
+	public static final String[] O_AUTH = {"/oauth/**"};
 	public static final String USER_ROLE_NAME = "USER";
 	public static final String ADMIN_ROLE_NAME = "ADMIN";
 
@@ -86,8 +89,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityWebFilterChain(@NotNull HttpSecurity http) throws Exception {
 		http
 				.csrf().disable()
-				.sessionManagement(session -> session
-						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(request -> {
 					request.antMatchers(null, PUBLIC_WHITELIST).permitAll()
 							.antMatchers(null, AUTH_WHITELIST).permitAll()
@@ -97,8 +99,7 @@ public class SecurityConfig {
 							.antMatchers(null, TEST_WHITELIST).hasRole("USER")
 							.anyRequest().authenticated();
 				})
-				.oauth2ResourceServer(oauth2 -> oauth2
-						.jwt(Customizer.withDefaults()));
+				.oauth2Login(oauth -> oauth.userInfoEndpoint().userService(oAuth2UserService));
 //				.formLogin(httpSecurityFormLoginConfigurer ->
 //						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
 //								.successHandler(afterAuthenticationSuccessHandler)

@@ -1,6 +1,5 @@
 package org.authen.util.device;
 
-import com.google.common.base.Strings;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
@@ -53,13 +52,13 @@ public class DeviceMetaDataUtils {
 			InetAddress ipAddress = InetAddress.getByName(ip);
 			CityResponse cityResponse = databaseReader.city(ipAddress);
 
-			if (nonNull(cityResponse) &&
-					nonNull(cityResponse.getCity()) &&
-					!Strings.isNullOrEmpty(cityResponse.getCity().getName())) {
-
-				location = cityResponse.getCity().getName();
-				return location;
-			}
+//			if (nonNull(cityResponse) &&
+//					nonNull(cityResponse.getCity()) &&
+//					!Strings.isNullOrEmpty(cityResponse.getCity().getName())) {
+//
+//				location = cityResponse.getCity().getName();
+//				return location;
+//			}
 
 		} catch (IOException | GeoIp2Exception exception) {
 			location = UNKNOWN;
