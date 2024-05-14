@@ -74,7 +74,7 @@ spring:
 #            client-authentication-method: basic
 #            provider: google
             scope:
-              - openid
+#              - openid -> if add, loadUser will not execute
               - profile
               - email
 
