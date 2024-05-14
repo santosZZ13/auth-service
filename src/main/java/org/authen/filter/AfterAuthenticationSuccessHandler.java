@@ -37,6 +37,7 @@ public class AfterAuthenticationSuccessHandler implements AuthenticationSuccessH
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest servletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
 		RequestWrapper requestWrapper = RequestWrapper.builder().request(servletRequest).build();
 		User user = (User) authentication.getPrincipal();
 		String username = user.getUsername();

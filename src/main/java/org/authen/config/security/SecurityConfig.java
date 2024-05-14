@@ -2,10 +2,7 @@ package org.authen.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.authen.filter.AfterAuthenticationSuccessHandler;
-import org.authen.filter.GatewayProperties;
-import org.authen.filter.GenericResponseFilter;
-import org.authen.filter.JwtAuthFilter;
+import org.authen.filter.*;
 import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.service.user.UserServiceImpl;
 import org.authen.errors.security.UserAuthenticationErrorHandler;
@@ -38,6 +35,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
+	private final AfterOauth2SuccessHandler afterOauth2SuccessHandler;
 	private final UserServiceImpl userServiceImpl;
 	private final JwtAuthFilter jwtAuthFilter;
 	//	private final GatewayServletFilter gatewayServletFilter;
@@ -89,6 +87,10 @@ public class SecurityConfig {
 	public SecurityFilterChain securityWebFilterChain(@NotNull HttpSecurity http) throws Exception {
 		http
 				.csrf().disable()
+				/**
+				 * Why does setting sessioncreation policy to stateless break my oauth2 app
+				 * https://stackoverflow.com/questions/67377634/why-does-setting-sessioncreation-policy-to-stateless-break-my-oauth2-app
+				 */
 //				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(request -> {
 					request.antMatchers(null, PUBLIC_WHITELIST).permitAll()
@@ -99,7 +101,13 @@ public class SecurityConfig {
 							.antMatchers(null, TEST_WHITELIST).hasRole("USER")
 							.anyRequest().authenticated();
 				})
-				.oauth2Login(oauth -> oauth.userInfoEndpoint().userService(oAuth2UserService));
+				.oauth2Login(
+						oauth -> oauth
+								.userInfoEndpoint()
+								.userService(oAuth2UserService)
+								.and()
+								.successHandler(afterOauth2SuccessHandler)
+				);
 //				.formLogin(httpSecurityFormLoginConfigurer ->
 //						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
 //								.successHandler(afterAuthenticationSuccessHandler)

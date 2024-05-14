@@ -21,6 +21,6 @@ public class App{
 
 	@GetMapping("/api/test")
 	public Object getTest(Authentication authentication) {
-		return authentication.getPrincipal();
+		return "HELLO";
 	}
 }

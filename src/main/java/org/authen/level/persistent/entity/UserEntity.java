@@ -1,6 +1,7 @@
 package org.authen.level.persistent.entity;
 
 import lombok.*;
+import org.authen.level.persistent.enums.Provider;
 
 import javax.persistence.*;
 
@@ -44,9 +45,14 @@ public class UserEntity extends BaseEntity {
 	@Column(name = "last_name")
 	private String lastName;
 
+	@Column(name = "provider")
+	@Enumerated(EnumType.STRING)
+	private Provider provider;
+
 	public UserEntity() {
 		super();
-		this.enabled = false;
+		this.enabled = Boolean.FALSE;
+		this.provider = Provider.LOCAL;
 	}
 
 //	public UserEntity() {
