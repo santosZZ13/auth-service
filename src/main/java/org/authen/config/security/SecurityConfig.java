@@ -3,7 +3,7 @@ package org.authen.config.security;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.authen.filter.*;
-import org.authen.service.user.OAuth2UserServiceImpl;
+//import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.service.user.UserServiceImpl;
 import org.authen.errors.security.UserAuthenticationErrorHandler;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +13,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -36,7 +38,7 @@ public class SecurityConfig {
 	private final JwtAuthFilter jwtAuthFilter;
 	//	private final GatewayServletFilter gatewayServletFilter;
 //	private final CustomHeaderValidatorFilter customHeaderValidatorFilter;
-	private final OAuth2UserServiceImpl oAuth2UserService;
+//	private final OAuth2UserServiceImpl oAuth2UserService;
 
 
 	public static final String[] USER_WHITELIST = {"/api/user/**"};
@@ -52,6 +54,7 @@ public class SecurityConfig {
 
 	/**
 	 * Configuring the authentication manager
+	 *
 	 * @param authenticationConfiguration the authentication configuration
 	 * @return the authentication manager
 	 * @throws Exception
@@ -63,6 +66,7 @@ public class SecurityConfig {
 
 	/**
 	 * Configuring the authentication provider
+	 *
 	 * @return the authentication provider
 	 */
 	@Bean
@@ -87,23 +91,24 @@ public class SecurityConfig {
 				 * Why does setting sessioncreation policy to stateless break my oauth2 app
 				 * https://stackoverflow.com/questions/67377634/why-does-setting-sessioncreation-policy-to-stateless-break-my-oauth2-app
 				 */
-//				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(request -> {
 					request.antMatchers(null, PUBLIC_WHITELIST).permitAll()
 							.antMatchers(null, AUTH_WHITELIST).permitAll()
 							.antMatchers(null, PRIVATE_WHITELIST).authenticated()
 							.antMatchers(null, USER_WHITELIST).hasAnyRole(USER_ROLE_NAME)
 							.antMatchers(null, ADMIN_WHITELIST).hasAnyRole(ADMIN_ROLE_NAME)
-							.antMatchers(null, TEST_WHITELIST).hasRole("USER")
+							.antMatchers(null, TEST_WHITELIST).authenticated()
 							.anyRequest().authenticated();
 				})
-				.oauth2Login(
-						oauth -> oauth
-								.userInfoEndpoint()
-								.userService(oAuth2UserService)
-								.and()
-								.successHandler(afterOauth2SuccessHandler)
-				);
+				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+//				.oauth2Login(
+//						oauth -> oauth
+//								.userInfoEndpoint()
+//								.userService(oAuth2UserService)
+//								.and()
+//								.successHandler(afterOauth2SuccessHandler)
+//				);
 //				.formLogin(httpSecurityFormLoginConfigurer ->
 //						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
 //								.successHandler(afterAuthenticationSuccessHandler)

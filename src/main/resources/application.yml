@@ -62,9 +62,10 @@ spring:
 
   security:
     oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: http://localhost:8080/
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com/
+          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
       client:
         registration:
           google:
@@ -74,10 +75,12 @@ spring:
 #            client-authentication-method: basic
 #            provider: google
             scope:
-#              - openid -> if add, loadUser will not execute
+              - openid  #if add, loadUser will not execute
               - profile
               - email
-
+#              - https://www.googleapis.com/auth/userinfo.email
+#              - https://www.googleapis.com/auth/userinfo.profile
+#              - openid
 #            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 #            client-name: Google
 
