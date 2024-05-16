@@ -2,8 +2,10 @@ package org.authen.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.authen.errors.security.UserForbiddenErrorHandler;
 import org.authen.filter.*;
 //import org.authen.service.user.OAuth2UserServiceImpl;
+import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.service.user.UserServiceImpl;
 import org.authen.errors.security.UserAuthenticationErrorHandler;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +40,7 @@ public class SecurityConfig {
 	private final JwtAuthFilter jwtAuthFilter;
 	//	private final GatewayServletFilter gatewayServletFilter;
 //	private final CustomHeaderValidatorFilter customHeaderValidatorFilter;
-//	private final OAuth2UserServiceImpl oAuth2UserService;
+	private final OAuth2UserServiceImpl oAuth2UserService;
 
 
 	public static final String[] USER_WHITELIST = {"/api/user/**"};
@@ -101,29 +103,50 @@ public class SecurityConfig {
 							.antMatchers(null, TEST_WHITELIST).authenticated()
 							.anyRequest().authenticated();
 				})
-				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-//				.oauth2Login(
-//						oauth -> oauth
-//								.userInfoEndpoint()
-//								.userService(oAuth2UserService)
-//								.and()
-//								.successHandler(afterOauth2SuccessHandler)
-//				);
-//				.formLogin(httpSecurityFormLoginConfigurer ->
-//						httpSecurityFormLoginConfigurer.loginPage("/api/auth/login")
-//								.successHandler(afterAuthenticationSuccessHandler)
-//								.permitAll())
-//				.httpBasic()
-//				.and();
+//				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+				.formLogin().disable()
+//				.httpBasic().disable()
+//				.exceptionHandling(exception -> exception
+//						.authenticationEntryPoint(userAuthenticationErrorHandler())
+//						.accessDeniedHandler(new UserForbiddenErrorHandler()))
+				.oauth2Login(
+						oauth -> oauth
+								.authorizationEndpoint().baseUri("/oauth2/authorize")
+								.authorizationRequestRepository(cookieAuthorizationRequestRepository())
+
+								.and()
+
+								.redirectionEndpoint().baseUri("/oauth2/callback")
+
+								.and()
+
+								.userInfoEndpoint()
+								.userService(oAuth2UserService)
+								.and()
+								.successHandler(afterOauth2SuccessHandler)
+								.failureHandler(null)
+				);
+
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new GenericResponseFilter(), FilterSecurityInterceptor.class);
-		//
-//
 //		http.addFilterAfter(afterAuthenticationSuccessHandlers, JwtAuthFilter.class);
 		return http.build();
 	}
 
-//	@Bean
+
+	/**
+	 * By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
+	 * the authorization request. But, since our service is stateless, we can't save it in
+	 * the session. We'll save the request in a Base64 encoded cookie instead.
+	 *
+	 * @return the http cookie oauth2 authorization request repository
+	 */
+	@Bean
+	public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+		return new HttpCookieOAuth2AuthorizationRequestRepository();
+	}
+
+	//	@Bean
 //	@Order(1)
 //	public SecurityFilterChain testFiletChain(HttpSecurity http) throws Exception {
 //		http

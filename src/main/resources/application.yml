@@ -71,7 +71,7 @@ spring:
           google:
             clientId: 773619103626-c457k0qqgip96ej65846p61j6ij47fcs.apps.googleusercontent.com
             clientSecret: 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
-#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
 #            client-authentication-method: basic
 #            provider: google
             scope:
@@ -81,9 +81,14 @@ spring:
 #              - https://www.googleapis.com/auth/userinfo.email
 #              - https://www.googleapis.com/auth/userinfo.profile
 #              - openid
-#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-#            client-name: Google
-
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth # https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token # https://accounts.google.com/o/oauth2/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+            user-name-attribute: sub
 
 # API Gateway Configuration
 api-gateway:
