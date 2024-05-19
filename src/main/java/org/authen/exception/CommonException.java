@@ -1,4 +1,4 @@
-package org.authen.errors.security;
+package org.authen.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

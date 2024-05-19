@@ -6,7 +6,7 @@ spring:
     name: gateway-service
   main:
     banner-mode: console # Disable the Spring logo
-  #        web-application-type: none
+    #        web-application-type: none
     allow-bean-definition-overriding: true
 
   data:
@@ -34,7 +34,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
     generate-ddl: true
 
-# Redis Configuration
+  # Redis Configuration
   redis:
     host: localhost
     port: 6379
@@ -62,26 +62,26 @@ spring:
 
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://accounts.google.com/
-          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+      #      resourceserver:
+      #        jwt:
+      #          issuer-uri: https://accounts.google.com/
+      #          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
       client:
         registration:
           google:
             clientId: 773619103626-c457k0qqgip96ej65846p61j6ij47fcs.apps.googleusercontent.com
             clientSecret: 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
-            redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
-#            client-authentication-method: basic
-#            provider: google
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            #            client-authentication-method: basic
+            #            provider: google
             scope:
-              - openid  #if add, loadUser will not execute
+              #              - openid  #if add, loadUser will not execute
               - profile
               - email
-#              - https://www.googleapis.com/auth/userinfo.email
-#              - https://www.googleapis.com/auth/userinfo.profile
-#              - openid
-            client-name: Google
+            #              - https://www.googleapis.com/auth/userinfo.email
+            #              - https://www.googleapis.com/auth/userinfo.profile
+            #              - openid
+            client-name: google
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth # https://accounts.google.com/o/oauth2/auth
@@ -92,18 +92,34 @@ spring:
 
 # API Gateway Configuration
 api-gateway:
-    service-1:
-        host: localhost
-        port: 8080
-    mappings:
-        "[/api/**]" : ${api-gateway.service-1.host}:${api-gateway.service-1.port}
+  service-1:
+    host: localhost
+    port: 8080
+  mappings:
+    "[/api/**]": ${api-gateway.service-1.host}:${api-gateway.service-1.port}
 #        "[/swagger-ui/**]": ${api-gateway.host}:${api-gateway.port}
 
 
 santos:
-    jwt:
-        secret: 4261656C64756E67.4261656C64756E67
-        access_token_expiration_second: 1800 # 30 minutes
-        refresh_token_expiration_second: 3600
+  jwt:
+    secret: 4261656C64756E67.4261656C64756E67
+    access_token_expiration_second: 1800 # 30 minutes
+    refresh_token_expiration_second: 3600
 
 
+app:
+  #  app:
+  #    auth:
+  #      tokenSecret: 04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
+  #      tokenExpirationMsec: 864000000
+  #    cors:
+  #      allowedOrigins: http://localhost:3000,http://localhost:8080
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
+      - myandroidapp://oauth2/redirect
+      - myiosapp://oauth2/redirect

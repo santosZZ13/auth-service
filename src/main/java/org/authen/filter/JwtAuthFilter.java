@@ -57,7 +57,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 			if (Objects.isNull(token)) {
 				filterChain.doFilter(request, response);
-				return;
+//				return;
 			}
 
 			if (Objects.nonNull(userName) && authentication == null) {

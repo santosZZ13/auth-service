@@ -10,6 +10,10 @@ import javax.persistence.*;
 @Entity(name = "user")
 @Getter
 @Setter
+
+//@Table(name = "users", uniqueConstraints = {
+//		@UniqueConstraint(columnNames = "email")
+//})
 public class UserEntity extends BaseEntity {
 	//	@Id
 //	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +52,15 @@ public class UserEntity extends BaseEntity {
 	@Column(name = "provider")
 	@Enumerated(EnumType.STRING)
 	private Provider provider;
+
+	@Column(name = "image_url")
+	private String imageUrl;
+
+	@Column(name = "email_verified")
+	private Boolean emailVerified;
+
+	@Column(name = "provider_id")
+	private String providerId;
 
 	public UserEntity() {
 		super();

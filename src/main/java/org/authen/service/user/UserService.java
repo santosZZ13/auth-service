@@ -12,4 +12,7 @@ public interface UserService {
 	List<GrantedAuthority> getAuthorities(List<String> roles);
 	void updateEnabledByUsername(Boolean aTrue, String username);
 	UserModel getUserModelByUsername(String username);
+	UserModel getUSerModelByEmail(String email);
+	UserModel updateUserModel(UserModel userModelByEmail);
+	UserModel saveUserModel(UserModel userModel);
 }

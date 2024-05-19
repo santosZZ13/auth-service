@@ -1,4 +1,4 @@
-package org.authen.errors.security;
+package org.authen.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;

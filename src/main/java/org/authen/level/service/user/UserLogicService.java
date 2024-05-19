@@ -6,4 +6,8 @@ public interface UserLogicService {
 	UserModel getUserModelByUsername(String username);
 	void saveUser(UserModel userModel);
 	void updateEnabledByUsername(Boolean aBoolean, String username);
+	UserModel getUserModelByEmail(String email);
+	UserModel updateUserModel(UserModel userModelByEmail);
+	UserModel saveUserModel(UserModel userModel);
+
 }

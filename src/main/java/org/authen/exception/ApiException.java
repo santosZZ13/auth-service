@@ -1,4 +1,4 @@
-package org.authen.errors.api;
+package org.authen.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

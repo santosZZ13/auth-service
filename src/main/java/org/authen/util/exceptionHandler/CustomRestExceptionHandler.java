@@ -1,6 +1,6 @@
 package org.authen.util.exceptionHandler;
 
-import org.authen.errors.api.ApiException;
+import org.authen.exception.ApiException;
 import org.authen.util.error.FieldErrorWrapper;
 import org.authen.util.error.ResponseError;
 import org.authen.wapper.model.GenericResponseErrorWrapper;

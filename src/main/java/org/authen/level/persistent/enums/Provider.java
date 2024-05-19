@@ -1,11 +1,12 @@
 package org.authen.level.persistent.enums;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 public enum Provider {
 
-	LOCAL("L"), GOOGLE("G"), FACEBOOK("F"), GITHUB("GB"), TWITTER("TW"), LINKEDIN("LK");
+	LOCAL("local"), GOOGLE("google"), FACEBOOK("facebook"), GITHUB("github"), TWITTER("tw"), LINKEDIN("lk");
 
 	private final String name;
 
@@ -13,7 +14,7 @@ public enum Provider {
 		this.name = name;
 	}
 
-	public Provider getProvider(String name) {
+	public @Nullable Provider getProvider(String name) {
 		for (Provider provider : Provider.values()) {
 			if (provider.getName().equals(name)) {
 				return provider;

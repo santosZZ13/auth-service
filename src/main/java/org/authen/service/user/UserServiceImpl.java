@@ -83,4 +83,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	public Boolean isUsernameExist(String username) {
 		return userLogicService.getUserModelByUsername(username) != null;
 	}
+
+	@Override
+	public UserModel getUSerModelByEmail(String email) {
+		return userLogicService.getUserModelByEmail(email);
+	}
+
+	@Override
+	public UserModel updateUserModel(UserModel userModelByEmail) {
+		return userLogicService.updateUserModel(userModelByEmail);
+	}
+
+	@Override
+	public UserModel saveUserModel(UserModel userModel) {
+		return userLogicService.saveUserModel(userModel);
+	}
 }

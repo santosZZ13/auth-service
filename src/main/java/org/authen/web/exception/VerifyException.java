@@ -1,6 +1,6 @@
 package org.authen.web.exception;
 
-import org.authen.errors.api.ApiException;
+import org.authen.exception.ApiException;
 
 public class VerifyException extends ApiException {
 	public VerifyException(String message, String code, String shortDesc) {

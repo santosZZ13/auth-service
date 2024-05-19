@@ -2,12 +2,11 @@ package org.authen.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.authen.errors.security.UserForbiddenErrorHandler;
 import org.authen.filter.*;
 //import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.service.user.UserServiceImpl;
-import org.authen.errors.security.UserAuthenticationErrorHandler;
+import org.authen.exception.UserAuthenticationErrorHandler;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,6 +31,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Log4j2
 @AllArgsConstructor
 @EnableConfigurationProperties(BasicAuthProperties.class)
+//@EnableGlobalMethodSecurity(
+//		securedEnabled = true,
+//		jsr250Enabled = true,
+//		prePostEnabled = true
+//)
 public class SecurityConfig {
 
 	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
@@ -89,6 +93,8 @@ public class SecurityConfig {
 	public SecurityFilterChain securityWebFilterChain(@NotNull HttpSecurity http) throws Exception {
 		http
 				.csrf().disable()
+				.formLogin().disable()
+				.httpBasic().disable()
 				/**
 				 * Why does setting sessioncreation policy to stateless break my oauth2 app
 				 * https://stackoverflow.com/questions/67377634/why-does-setting-sessioncreation-policy-to-stateless-break-my-oauth2-app
@@ -104,27 +110,32 @@ public class SecurityConfig {
 							.anyRequest().authenticated();
 				})
 //				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-				.formLogin().disable()
-//				.httpBasic().disable()
-//				.exceptionHandling(exception -> exception
 //						.authenticationEntryPoint(userAuthenticationErrorHandler())
 //						.accessDeniedHandler(new UserForbiddenErrorHandler()))
+//				.oauth2Login()
+//				.authorizationEndpoint().baseUri("/oauth2/authorize")
+//				.authorizationRequestRepository(cookieAuthorizationRequestRepository())
+//				.and()
+//				.redirectionEndpoint()
+//				.baseUri("/oauth2/callback/*")
+//				.and()
+//				.userInfoEndpoint()
+//				.userService(oAuth2UserService)
+//				.and()
+//				.successHandler(afterOauth2SuccessHandler);
+////				.failureHandler(oAuth2AuthenticationFailureHandler);
 				.oauth2Login(
 						oauth -> oauth
 								.authorizationEndpoint().baseUri("/oauth2/authorize")
 								.authorizationRequestRepository(cookieAuthorizationRequestRepository())
-
 								.and()
-
-								.redirectionEndpoint().baseUri("/oauth2/callback")
-
+								.redirectionEndpoint().baseUri("/oauth2/callback/*")
 								.and()
-
 								.userInfoEndpoint()
 								.userService(oAuth2UserService)
 								.and()
 								.successHandler(afterOauth2SuccessHandler)
-								.failureHandler(null)
+//								.failureHandler(null)
 				);
 
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

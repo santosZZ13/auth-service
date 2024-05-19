@@ -31,4 +31,21 @@ public class UserLogicServiceImpl implements UserLogicService {
 	public void updateEnabledByUsername(Boolean aBoolean, String username) {
 		userJpaRepository.updateEnabledByUsername(aBoolean, username);
 	}
+
+	@Override
+	public UserModel getUserModelByEmail(String email) {
+		return userJpaRepository.findByEmail(email)
+				.map(UserModel::new)
+				.orElse(null);
+	}
+
+	@Override
+	public UserModel updateUserModel(UserModel userModelByEmail) {
+		return new UserModel(userJpaRepository.save(userModelByEmail.toUserEntity()));
+	}
+
+	@Override
+	public UserModel saveUserModel(UserModel userModel) {
+		return new UserModel(userJpaRepository.save(userModel.toUserEntity()));
+	}
 }

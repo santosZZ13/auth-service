@@ -1,6 +1,6 @@
 package org.authen.web.exception;
 
-import org.authen.errors.api.ApiException;
+import org.authen.exception.ApiException;
 
 public class LoginException extends ApiException {
 	public LoginException(String message, String code, String shortDesc) {

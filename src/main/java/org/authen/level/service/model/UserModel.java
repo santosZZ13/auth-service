@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.authen.level.persistent.entity.UserEntity;
+import org.authen.level.persistent.enums.Provider;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -22,8 +23,14 @@ public class UserModel {
 	private String email;
 	private String type;
 	private String locate;
+	// givenName
 	private String firstName;
+	// familyName
 	private String lastName;
+	private Provider provider;
+	private String imageUrl;
+	private Boolean emailVerified;
+	private String providerId;
 
 	private String createdBy;
 	private String modifiedBy;
@@ -41,6 +48,7 @@ public class UserModel {
 		this.type = userEntity.getType();
 		this.locate = userEntity.getLocate();
 		this.firstName = userEntity.getFirstName();
+		this.provider = userEntity.getProvider();
 		this.lastName = userEntity.getLastName();
 		this.createdBy = userEntity.getCreatedBy();
 		this.modifiedBy = userEntity.getModifiedBy();
@@ -56,11 +64,13 @@ public class UserModel {
 		userEntity.setRole(this.role);
 		userEntity.setEnabled(this.enabled);
 		userEntity.setEmail(this.email);
-		userEntity.setEmail(this.email);
 		userEntity.setType(this.type);
 		userEntity.setLocate(this.locate);
 		userEntity.setFirstName(this.firstName);
 		userEntity.setLastName(this.lastName);
+		userEntity.setProvider(this.provider);
+		userEntity.setImageUrl(this.imageUrl);
+		userEntity.setEmailVerified(this.emailVerified);
 //		userEntity.setCreatedBy(this.createdBy);
 //		userEntity.setModifiedBy(this.modifiedBy);
 //		userEntity.setCreatedDate(this.createDate);

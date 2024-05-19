@@ -1,6 +1,6 @@
 package org.authen.web.exception;
 
-import org.authen.errors.api.ApiException;
+import org.authen.exception.ApiException;
 
 public class RegisterException extends ApiException {
 	public RegisterException(String message, String code, String shortDesc) {
