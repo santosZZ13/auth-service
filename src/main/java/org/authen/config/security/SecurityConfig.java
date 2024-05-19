@@ -106,7 +106,7 @@ public class SecurityConfig {
 							.antMatchers(null, PRIVATE_WHITELIST).authenticated()
 							.antMatchers(null, USER_WHITELIST).hasAnyRole(USER_ROLE_NAME)
 							.antMatchers(null, ADMIN_WHITELIST).hasAnyRole(ADMIN_ROLE_NAME)
-							.antMatchers(null, TEST_WHITELIST).authenticated()
+							.antMatchers(null, TEST_WHITELIST).permitAll()
 							.anyRequest().authenticated();
 				})
 //				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

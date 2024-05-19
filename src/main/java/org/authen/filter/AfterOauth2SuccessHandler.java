@@ -46,7 +46,7 @@ public class AfterOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHan
 		}
 
 		clearAuthenticationAttributes(request, response);
-		getRedirectStrategy().sendRedirect(request, response, targetUrl);
+		getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080/api/test/");
 	}
 
 
