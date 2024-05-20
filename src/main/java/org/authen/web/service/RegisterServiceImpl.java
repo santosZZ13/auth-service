@@ -98,10 +98,10 @@ public class RegisterServiceImpl implements RegisterService {
 			throw new RuntimeException("redirect:/badUser.html?lang=" + locale.getLanguage());
 		}
 
-		userService.updateEnabledByUsername(Boolean.TRUE, userModel.getUsername());
+		userService.updateEnabledByUsername(Boolean.TRUE, userModel.getEmail());
 
 		ConfirmRegistrationResponse confirmRegistrationResponse = ConfirmRegistrationResponse.builder()
-				.message(String.format("User %s has been activated", userModel.getUsername()))
+				.message(String.format("User %s has been activated", userModel.getEmail()))
 				.data("redirect:/login.html?lang=" + request.getLocale().getLanguage())
 				.build();
 

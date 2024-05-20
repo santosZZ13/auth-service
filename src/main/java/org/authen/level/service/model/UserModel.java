@@ -16,7 +16,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserModel {
 	private Long id;
-	private String username;
 	private String password;
 	private String role;
 	private boolean enabled;
@@ -40,7 +39,6 @@ public class UserModel {
 
 	public UserModel(UserEntity userEntity) {
 		this.id = userEntity.getId();
-		this.username = userEntity.getUsername();
 		this.password = userEntity.getPassword();
 		this.role = userEntity.getRole();
 		this.enabled = userEntity.isEnabled();
@@ -59,7 +57,6 @@ public class UserModel {
 	public UserEntity toUserEntity() {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setId(this.id);
-		userEntity.setUsername(this.username);
 		userEntity.setPassword(this.password);
 		userEntity.setRole(this.role);
 		userEntity.setEnabled(this.enabled);
@@ -71,6 +68,7 @@ public class UserModel {
 		userEntity.setProvider(this.provider);
 		userEntity.setImageUrl(this.imageUrl);
 		userEntity.setEmailVerified(this.emailVerified);
+		userEntity.setProviderId(this.providerId);
 //		userEntity.setCreatedBy(this.createdBy);
 //		userEntity.setModifiedBy(this.modifiedBy);
 //		userEntity.setCreatedDate(this.createDate);

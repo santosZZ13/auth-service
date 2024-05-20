@@ -47,4 +47,9 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
     public String getSub() {
         return (String) attributes.get("sub");
     }
+
+    @Override
+    public Boolean getVerifiedEmail() {
+        return (Boolean) attributes.get("email_verified");
+    }
 }

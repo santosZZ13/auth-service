@@ -12,12 +12,11 @@ import java.util.Optional;
 
 @Repository
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
-	Optional<UserEntity> findByUsername(String username);
 	Optional<UserEntity> findByEmail(String email);
 	@NotNull List<UserEntity> findAll();
 	@Override
 	<S extends UserEntity> @NotNull S save(@NotNull S entity);
 	@Modifying
-	@Query("update user u set u.enabled = ?1 where u.username = ?2")
+	@Query("update user u set u.enabled = ?1 where u.email = ?2")
 	void updateEnabledByUsername(boolean enabled, String username);
 }

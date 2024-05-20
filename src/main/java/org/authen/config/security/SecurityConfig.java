@@ -40,11 +40,13 @@ public class SecurityConfig {
 
 	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
 	private final AfterOauth2SuccessHandler afterOauth2SuccessHandler;
+	private final AfterOauth2FailureHandler afterOauth2FailureHandler;
 	private final UserServiceImpl userServiceImpl;
 	private final JwtAuthFilter jwtAuthFilter;
 	//	private final GatewayServletFilter gatewayServletFilter;
 //	private final CustomHeaderValidatorFilter customHeaderValidatorFilter;
 	private final OAuth2UserServiceImpl oAuth2UserService;
+	private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 
 	public static final String[] USER_WHITELIST = {"/api/user/**"};
@@ -53,7 +55,7 @@ public class SecurityConfig {
 	public static final String[] PUBLIC_WHITELIST = {"/api/public/**"};
 	public static final String[] PRIVATE_WHITELIST = {"/api/private/**"};
 	public static final String[] AUTH_WHITELIST = {"/api/auth/**"};
-	public static final String[] O_AUTH = {"/oauth/**"};
+	public static final String[] O_AUTH = {"/api/redirect/**"};
 	public static final String USER_ROLE_NAME = "USER";
 	public static final String ADMIN_ROLE_NAME = "ADMIN";
 
@@ -107,27 +109,13 @@ public class SecurityConfig {
 							.antMatchers(null, USER_WHITELIST).hasAnyRole(USER_ROLE_NAME)
 							.antMatchers(null, ADMIN_WHITELIST).hasAnyRole(ADMIN_ROLE_NAME)
 							.antMatchers(null, TEST_WHITELIST).permitAll()
+							.antMatchers(null, O_AUTH).permitAll()
 							.anyRequest().authenticated();
 				})
-//				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-//						.authenticationEntryPoint(userAuthenticationErrorHandler())
-//						.accessDeniedHandler(new UserForbiddenErrorHandler()))
-//				.oauth2Login()
-//				.authorizationEndpoint().baseUri("/oauth2/authorize")
-//				.authorizationRequestRepository(cookieAuthorizationRequestRepository())
-//				.and()
-//				.redirectionEndpoint()
-//				.baseUri("/oauth2/callback/*")
-//				.and()
-//				.userInfoEndpoint()
-//				.userService(oAuth2UserService)
-//				.and()
-//				.successHandler(afterOauth2SuccessHandler);
-////				.failureHandler(oAuth2AuthenticationFailureHandler);
 				.oauth2Login(
 						oauth -> oauth
 								.authorizationEndpoint().baseUri("/oauth2/authorize")
-								.authorizationRequestRepository(cookieAuthorizationRequestRepository())
+								.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
 								.and()
 								.redirectionEndpoint().baseUri("/oauth2/callback/*")
 								.and()
@@ -135,7 +123,7 @@ public class SecurityConfig {
 								.userService(oAuth2UserService)
 								.and()
 								.successHandler(afterOauth2SuccessHandler)
-//								.failureHandler(null)
+								.failureHandler(afterOauth2FailureHandler)
 				);
 
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -152,10 +140,10 @@ public class SecurityConfig {
 	 *
 	 * @return the http cookie oauth2 authorization request repository
 	 */
-	@Bean
-	public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-		return new HttpCookieOAuth2AuthorizationRequestRepository();
-	}
+//	@Bean
+//	public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+//		return new HttpCookieOAuth2AuthorizationRequestRepository();
+//	}
 
 	//	@Bean
 //	@Order(1)

@@ -19,8 +19,4 @@ public class App{
 		SpringApplication.run(App.class, args);
 	}
 
-	@GetMapping("/api/test")
-	public Object getTest(Authentication authentication) {
-		return "HELLO";
-	}
 }

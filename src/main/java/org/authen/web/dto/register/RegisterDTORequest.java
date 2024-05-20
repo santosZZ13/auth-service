@@ -63,7 +63,6 @@ public class RegisterDTORequest {
 
 	public UserModel toUserModelWithHashPasswordToSaveInDB(final String hashedPassword) {
 		return UserModel.builder()
-				.username(this.registerForm.getUsername())
 				.password(hashedPassword)
 				.email(this.registerForm.getEmail())
 				.type(this.registerForm.getType())

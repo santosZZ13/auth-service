@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.Objects;
@@ -84,6 +83,10 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 				.firstName(oAuth2UserInfo.getGivenName())
 				.lastName(oAuth2UserInfo.getFamilyName())
 				.imageUrl(oAuth2UserInfo.getImageUrl())
+				.locate(oAuth2UserInfo.getLocale())
+				.role("USER")
+				.type("NORMAL")
+				.emailVerified(oAuth2UserInfo.getVerifiedEmail())
 				.build();
 		return userService.saveUserModel(userModel);
 	}

@@ -106,7 +106,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
 	@Override
 	public boolean validateToken(String token, UserModel userEntity) {
-		return extractUsername(token).equals(userEntity.getUsername()) && !isTokenExpired(token);
+		return extractUsername(token).equals(userEntity.getEmail()) && !isTokenExpired(token);
 	}
 
 	private boolean isTokenExpired(String token) {

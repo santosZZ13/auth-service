@@ -27,7 +27,6 @@ public class RegisterConfig {
 	private String lastName;
 
 	public RegisterConfig(UserModel userModel) {
-		this.username = userModel.getUsername();
 		this.password = userModel.getPassword();
 		this.email = userModel.getEmail();
 		this.type = userModel.getType();

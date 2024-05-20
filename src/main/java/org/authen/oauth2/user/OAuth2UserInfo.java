@@ -23,4 +23,5 @@ public abstract class OAuth2UserInfo {
 	public abstract String getFamilyName();
 	public abstract String getLocale();
 	public abstract String getSub();
+	public abstract Boolean getVerifiedEmail();
 }

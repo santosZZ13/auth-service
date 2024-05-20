@@ -16,7 +16,7 @@ public class UserLogicServiceImpl implements UserLogicService {
 
 	@Override
 	public UserModel getUserModelByUsername(String username) {
-		Optional<UserEntity> userEntity = userJpaRepository.findByUsername(username);
+		Optional<UserEntity> userEntity = userJpaRepository.findByEmail(username);
 		return userEntity
 				.map(UserModel::new)
 				.orElse(null);

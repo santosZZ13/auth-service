@@ -6,6 +6,7 @@ import org.authen.config.security.HttpCookieOAuth2AuthorizationRequestRepository
 import org.authen.exception.BadRequestException;
 import org.authen.jwt.JwtTokenService;
 import org.authen.util.cookie.CookieUtils;
+import org.authen.util.jwt.JwtUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.authen.config.security.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -30,6 +32,7 @@ public class AfterOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHan
 	private final JwtTokenService jwtTokenService;
 	private final AppProperties appProperties;
 	private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+	private final JwtUtils jwtUtils;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
@@ -46,7 +49,7 @@ public class AfterOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHan
 		}
 
 		clearAuthenticationAttributes(request, response);
-		getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080/api/test/");
+		getRedirectStrategy().sendRedirect(request, response, targetUrl);
 	}
 
 
@@ -59,19 +62,18 @@ public class AfterOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHan
 	protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
 				.map(Cookie::getValue);
-		// http://localhost:3000/oauth2/redirect
 
 		if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
 			throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
 		}
 
 		String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+		Map<String, String> token = jwtUtils.generateTokens(authentication);
 
-//		String token = tokenProvider.createToken(authentication);
-		String token = "test";
 
 		return UriComponentsBuilder.fromUriString(targetUrl)
-				.queryParam("token", token)
+				.queryParam("access_token", token.get("access_token"))
+				.queryParam("refresh_token", token.get("refresh_token"))
 				.build().toUriString();
 	}
 

@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		}
 
 		return User
-				.withUsername(userModelByUsername.getUsername())
+				.withUsername(userModelByUsername.getEmail())
 				.password(userModelByUsername.getPassword())
 				.authorities(this.getAuthorities(List.of(userModelByUsername.getRole())))
 				.accountExpired(false)
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	@Override
 	public UserDetails toUserDetails(UserModel userModel) {
 		return User
-				.withUsername(userModel.getUsername())
+				.withUsername(userModel.getEmail())
 				.password(userModel.getPassword())
 				.authorities(this.getAuthorities(List.of(userModel.getRole())))
 				.accountExpired(false)

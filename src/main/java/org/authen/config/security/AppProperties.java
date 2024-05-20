@@ -29,6 +29,7 @@ public class AppProperties {
 	@Setter
 	public static final class OAuth2 {
 		private List<String> authorizedRedirectUris = new ArrayList<>();
+		private String redirectUri;
 
 		public OAuth2 authorizedRedirectUris(List<String> authorizedRedirectUris) {
 			this.authorizedRedirectUris = authorizedRedirectUris;

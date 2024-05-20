@@ -47,4 +47,9 @@ public class GithubOAuth2UserInfo extends OAuth2UserInfo {
     public String getSub() {
         return "";
     }
+
+    @Override
+    public Boolean getVerifiedEmail() {
+        return null;
+    }
 }

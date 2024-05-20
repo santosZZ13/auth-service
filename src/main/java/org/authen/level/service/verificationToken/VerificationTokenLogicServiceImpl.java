@@ -45,7 +45,6 @@ public class VerificationTokenLogicServiceImpl implements VerificationTokenLogic
 	private UserModel toUserModel(UserEntity userEntity) {
 		return UserModel.builder()
 				.id(userEntity.getId())
-				.username(userEntity.getUsername())
 				.password(userEntity.getPassword())
 				.email(userEntity.getEmail())
 				.enabled(userEntity.isEnabled())
