@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,7 +43,7 @@ public class SecurityConfig {
 	private final AfterOauth2SuccessHandler afterOauth2SuccessHandler;
 	private final AfterOauth2FailureHandler afterOauth2FailureHandler;
 	private final UserServiceImpl userServiceImpl;
-	private final JwtAuthFilter jwtAuthFilter;
+//	private final JwtAuthFilter jwtAuthFilter;
 	//	private final GatewayServletFilter gatewayServletFilter;
 //	private final CustomHeaderValidatorFilter customHeaderValidatorFilter;
 	private final OAuth2UserServiceImpl oAuth2UserService;
@@ -93,6 +94,7 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityWebFilterChain(@NotNull HttpSecurity http) throws Exception {
+
 		http
 				.csrf().disable()
 				.formLogin().disable()
@@ -111,22 +113,32 @@ public class SecurityConfig {
 							.antMatchers(null, TEST_WHITELIST).permitAll()
 							.antMatchers(null, O_AUTH).permitAll()
 							.anyRequest().authenticated();
-				})
-				.oauth2Login(
-						oauth -> oauth
-								.authorizationEndpoint().baseUri("/oauth2/authorize")
-								.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
-								.and()
-								.redirectionEndpoint().baseUri("/oauth2/callback/*")
-								.and()
-								.userInfoEndpoint()
-								.userService(oAuth2UserService)
-								.and()
-								.successHandler(afterOauth2SuccessHandler)
-								.failureHandler(afterOauth2FailureHandler)
-				);
+				});
+//				.oauth2Login(
+//						Customizer.withDefaults()
+//						oauth -> oauth
+//								.authorizationEndpoint().baseUri("/oauth2/authorize")
+//								.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+//								.and()
+//								.redirectionEndpoint().baseUri("/oauth2/callback/*")
+//								.and()
+//								.userInfoEndpoint()
+//								.userService(oAuth2UserService)
+//								.and()
+//								.successHandler(afterOauth2SuccessHandler)
+//								.failureHandler(afterOauth2FailureHandler)
+//				);;
 
-		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		http.oauth2ResourceServer(auth -> {
+			auth.opaqueToken(
+					opaqueTokenConfigurer -> opaqueTokenConfigurer
+							.introspectionUri("http://localhost:8081/oauth2/introspect")
+							.introspectionClientCredentials("demo-client", "demo-secret")
+			);
+		});
+
+
+//		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new GenericResponseFilter(), FilterSecurityInterceptor.class);
 //		http.addFilterAfter(afterAuthenticationSuccessHandlers, JwtAuthFilter.class);
 		return http.build();
@@ -173,7 +185,6 @@ public class SecurityConfig {
 //	public WebSecurityCustomizer webSecurityCustomizer() {
 //		return (web) -> web.ignoring().antMatchers("/api/public/**");
 //	}
-
 	@Bean
 	public AuthenticationEntryPoint userAuthenticationErrorHandler() {
 		UserAuthenticationErrorHandler userAuthenticationErrorHandler = new UserAuthenticationErrorHandler();
