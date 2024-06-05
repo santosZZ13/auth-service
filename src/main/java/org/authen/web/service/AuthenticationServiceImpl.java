@@ -2,15 +2,13 @@ package org.authen.web.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.authen.level.service.model.UserModel;
 import org.authen.enums.AuthConstants;
-import org.authen.util.error.ErrorCode;
 import org.authen.util.jwt.JwtUtils;
 import org.authen.web.exception.LoginException;
 import org.authen.web.dto.login.LoginRequestDTO;
 import org.authen.web.dto.login.LoginResponseDTO;
 import org.authen.web.dto.logout.LogoutRequestDTO;
-import org.authen.filter.AfterAuthenticationSuccessHandler;
+import org.authen.config.security.handler.AfterAuthenticationSuccessHandler;
 import org.authen.jwt.JwtTokenService;
 import org.authen.wapper.model.GenericResponseSuccessWrapper;
 import org.authen.service.user.UserService;

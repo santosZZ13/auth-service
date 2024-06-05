@@ -1,4 +1,4 @@
-package org.authen.filter;
+package org.authen.config.security.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -8,7 +8,6 @@ import org.authen.level.service.model.UserModel;
 import org.authen.service.user.UserService;
 import org.authen.util.device.DeviceMetaDataUtils;
 import org.authen.wapper.model.RequestWrapper;
-import org.authen.service.device.DeviceService;
 import org.authen.web.exception.VerifyException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;

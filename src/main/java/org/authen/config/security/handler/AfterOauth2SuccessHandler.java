@@ -1,14 +1,13 @@
-package org.authen.filter;
+package org.authen.config.security.handler;
 
 import lombok.AllArgsConstructor;
-import org.authen.config.security.AppProperties;
-import org.authen.config.security.HttpCookieOAuth2AuthorizationRequestRepository;
+import org.authen.config.security.properties.AppProperties;
+import org.authen.config.security.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.authen.exception.BadRequestException;
 import org.authen.jwt.JwtTokenService;
 import org.authen.util.cookie.CookieUtils;
 import org.authen.util.jwt.JwtUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,7 +22,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.authen.config.security.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static org.authen.config.security.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @Service
 @AllArgsConstructor

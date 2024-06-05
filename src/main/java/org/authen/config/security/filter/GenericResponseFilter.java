@@ -1,4 +1,4 @@
-package org.authen.filter;
+package org.authen.config.security.filter;
 
 import lombok.extern.log4j.Log4j2;
 

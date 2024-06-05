@@ -1,4 +1,4 @@
-package org.authen.filter;
+package org.authen.config.security.filter;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

@@ -1,7 +1,8 @@
-package org.authen.config.security;
+package org.authen.config.security.repository;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.AllArgsConstructor;
+import org.authen.config.security.properties.AppProperties;
 import org.authen.util.cookie.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
@@ -21,7 +22,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 	private static final int cookieExpireSeconds = 180; // 3 minutes
 
 	@Autowired
-	private  AppProperties appProperties;
+	private AppProperties appProperties;
 
 	@Override
 	public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {

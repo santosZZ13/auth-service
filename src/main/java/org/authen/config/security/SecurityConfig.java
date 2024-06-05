@@ -1,10 +1,19 @@
 package org.authen.config.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.authen.filter.*;
+import org.authen.config.security.handler.AfterAuthenticationSuccessHandler;
+import org.authen.config.security.handler.AfterOauth2FailureHandler;
+import org.authen.config.security.handler.AfterOauth2SuccessHandler;
+import org.authen.config.security.filter.GenericResponseFilter;
+import org.authen.config.security.properties.BasicAuthProperties;
+import org.authen.config.security.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 //import org.authen.service.user.OAuth2UserServiceImpl;
+import org.authen.filter.JwtAuthFilter;
+import org.authen.jwt.JwtTokenService;
 import org.authen.service.user.OAuth2UserServiceImpl;
+import org.authen.service.user.UserService;
 import org.authen.service.user.UserServiceImpl;
 import org.authen.exception.UserAuthenticationErrorHandler;
 import org.jetbrains.annotations.NotNull;
@@ -14,14 +23,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -43,9 +51,6 @@ public class SecurityConfig {
 	private final AfterOauth2SuccessHandler afterOauth2SuccessHandler;
 	private final AfterOauth2FailureHandler afterOauth2FailureHandler;
 	private final UserServiceImpl userServiceImpl;
-//	private final JwtAuthFilter jwtAuthFilter;
-	//	private final GatewayServletFilter gatewayServletFilter;
-//	private final CustomHeaderValidatorFilter customHeaderValidatorFilter;
 	private final OAuth2UserServiceImpl oAuth2UserService;
 	private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
@@ -93,8 +98,8 @@ public class SecurityConfig {
 
 
 	@Bean
-	public SecurityFilterChain securityWebFilterChain(@NotNull HttpSecurity http) throws Exception {
-
+	public SecurityFilterChain securityWebFilterChain(@NotNull HttpSecurity http,
+													  JwtAuthFilter jwtAuthFilter) throws Exception {
 		http
 				.csrf().disable()
 				.formLogin().disable()
@@ -138,9 +143,9 @@ public class SecurityConfig {
 		});
 
 
-//		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+		http.addFilterBefore(jwtAuthFilter, BearerTokenAuthenticationFilter.class);
 		http.addFilterAfter(new GenericResponseFilter(), FilterSecurityInterceptor.class);
-//		http.addFilterAfter(afterAuthenticationSuccessHandlers, JwtAuthFilter.class);
 		return http.build();
 	}
 

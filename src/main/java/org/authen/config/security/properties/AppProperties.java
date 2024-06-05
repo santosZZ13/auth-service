@@ -1,4 +1,4 @@
-package org.authen.config.security;
+package org.authen.config.security.properties;
 
 import lombok.Getter;
 import lombok.Setter;
