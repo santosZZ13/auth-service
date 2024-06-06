@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.authen.config.security.properties.AppProperties;
 import org.authen.config.security.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.authen.exception.BadRequestException;
-import org.authen.jwt.JwtTokenService;
 import org.authen.util.cookie.CookieUtils;
 import org.authen.config.security.jwt.JwtUtils;
 import org.springframework.security.core.Authentication;
@@ -28,7 +27,6 @@ import static org.authen.config.security.repository.HttpCookieOAuth2Authorizatio
 @AllArgsConstructor
 public class AfterOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-	private final JwtTokenService jwtTokenService;
 	private final AppProperties appProperties;
 	private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 	private final JwtUtils jwtUtils;

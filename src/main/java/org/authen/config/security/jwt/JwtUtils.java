@@ -158,6 +158,10 @@ public class JwtUtils {
 		return JWT_PATTERN.matcher(token).matches();
 	}
 
+	public String extractUsername(String token) {
+		return null;
+	}
+
 //	public Map<String, Object> getClaimsFromToken(final @NotNull String token) {
 //		Claims claims = Jwts.parser()
 //				.setSigningKey(getSingingKey())

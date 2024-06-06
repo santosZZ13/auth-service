@@ -9,7 +9,6 @@ import org.authen.web.dto.login.LoginRequestDTO;
 import org.authen.web.dto.login.LoginResponseDTO;
 import org.authen.web.dto.logout.LogoutRequestDTO;
 import org.authen.config.security.handler.AfterAuthenticationSuccessHandler;
-import org.authen.jwt.JwtTokenService;
 import org.authen.wapper.model.GenericResponseSuccessWrapper;
 import org.authen.service.user.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,7 +31,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final UserService userService;
 	private final AuthenticationManager authenticationManager;
-	private final JwtTokenService jwtTokenService;
 	private final AfterAuthenticationSuccessHandler afterAuthenticationSuccessHandler;
 	private final JwtUtils jwtUtils;
 

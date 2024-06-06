@@ -2,11 +2,11 @@ package org.authen.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.authen.config.security.jwt.JwtUtils;
 import org.authen.config.security.resolver.BearerTokenResolver;
 import org.authen.level.service.model.UserModel;
 import org.authen.web.dto.ApiErrorResponse;
 import org.authen.service.user.UserService;
-import org.authen.jwt.JwtTokenService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,7 +23,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,61 +36,59 @@ import java.util.Objects;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 	private final UserService userService;
-	private final JwtTokenService jwtTokenService;
 	private final ObjectMapper objectMapper;
 	private final BearerTokenResolver bearerTokenResolver;
-
 //	@Override
 	protected void doFilterInternalC(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
 										  @NotNull FilterChain filterChain) throws ServletException, IOException {
-		try {
-
-			if (isByPassToken(request)) {
-				filterChain.doFilter(request, response);
-				return;
-			}
-
-			final String authHeader = request.getHeader("Authorization");
-			String token = null;
-			String userName = null;
-
-
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-			// Check if the Authorization header is not null and starts with "Bearer "
-			if (authHeader != null && authHeader.startsWith("Bearer ")) {
-				token = authHeader.substring(7);
-				userName = jwtTokenService.extractUsername(token);
-			}
-
-			if (Objects.isNull(token)) {
-				filterChain.doFilter(request, response);
-				return;
-			}
-
-			if (Objects.nonNull(userName) && authentication == null) {
-				UserModel byUsername = userService.getUserModelByUsername(userName);
-				UserDetails userDetails = userService.toUserDetails(byUsername);
-
-				if (jwtTokenService.validateToken(token, byUsername)) {
-					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-							userDetails, null, userDetails.getAuthorities());
-					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-				}
-			}
-
-
-
-
-			filterChain.doFilter(request, response);
-
-
-		} catch (AccessDeniedException e) {
-			ApiErrorResponse errorResponse = new ApiErrorResponse(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			response.getWriter().write(toJson(errorResponse));
-		}
+//		try {
+//
+//			if (isByPassToken(request)) {
+//				filterChain.doFilter(request, response);
+//				return;
+//			}
+//
+//			final String authHeader = request.getHeader("Authorization");
+//			String token = null;
+//			String userName = null;
+//
+//
+//			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//			// Check if the Authorization header is not null and starts with "Bearer "
+//			if (authHeader != null && authHeader.startsWith("Bearer ")) {
+//				token = authHeader.substring(7);
+//				userName = jwtTokenService.extractUsername(token);
+//			}
+//
+//			if (Objects.isNull(token)) {
+//				filterChain.doFilter(request, response);
+//				return;
+//			}
+//
+//			if (Objects.nonNull(userName) && authentication == null) {
+//				UserModel byUsername = userService.getUserModelByUsername(userName);
+//				UserDetails userDetails = userService.toUserDetails(byUsername);
+//
+//				if (jwtTokenService.validateToken(token, byUsername)) {
+//					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//							userDetails, null, userDetails.getAuthorities());
+//					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//				}
+//			}
+//
+//
+//
+//
+//			filterChain.doFilter(request, response);
+//
+//
+//		} catch (AccessDeniedException e) {
+//			ApiErrorResponse errorResponse = new ApiErrorResponse(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+//			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//			response.getWriter().write(toJson(errorResponse));
+//		}
 	}
 
 

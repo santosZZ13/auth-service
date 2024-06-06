@@ -11,7 +11,6 @@ import org.authen.config.security.properties.BasicAuthProperties;
 import org.authen.config.security.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 //import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.filter.JwtAuthFilter;
-import org.authen.jwt.JwtTokenService;
 import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.service.user.UserServiceImpl;
 import org.authen.exception.UserAuthenticationErrorHandler;
