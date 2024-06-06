@@ -1,10 +1,11 @@
-package org.authen.util.jwt;
+package org.authen.config.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.log4j.Log4j2;
 import org.authen.enums.AuthConstants;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,11 +14,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nonnull;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.joining;
 
@@ -54,15 +55,60 @@ public class JwtUtils {
 		}
 	}
 
-
+	/**
+	 * {
+	 *     "active": true,
+	 *     "sub": "demo-client",
+	 *     "aud": [
+	 *         "demo-client"
+	 *     ],
+	 *     "nbf": 1717645685,
+	 *     "iss": "http://localhost:8081",
+	 *     "exp": 1717663685,
+	 *     "iat": 1717645685,
+	 *     "jti": "364841bc-41ee-42cc-9ecd-1e2cfe548836",
+	 *     "authorities": [
+	 *         "ARTICLE_WRITE",
+	 *         "ARTICLE_READ"
+	 *     ],
+	 *     "username": "admin",
+	 *     "client_id": "demo-client",
+	 *     "token_type": "Bearer"
+	 * }
+	 *
+	 *
+	 * // //		{
+	 * //			"sub": "quangnam1305@gmail.com",
+	 * //				"authorities": "ROLE_USER",
+	 * //				"iat": 1717575691,
+	 * //				"exp": 1717577491
+	 * //		}
+	 * @param authentication
+	 * @param expirationSecond
+	 * @return
+	 */
 	@Nonnull
 	private String createToken(Authentication authentication, long expirationSecond) {
 		final String userName = authentication.getName();
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
+		Map<String, Object> claimsProperties = Map.of(
+				"active", Boolean.TRUE,
+//				"aud", List.of("demo-client"),
+//				"nbf", Date.from(Instant.now()).getTime(),
+				"iss", "http://localhost:8080",
+//				"exp", Date.from(Instant.now()).getTime() + expirationSecond * 1000,
+//				"iat", Date.from(Instant.now()).getTime(),
+//				"jti", UUID.randomUUID().toString(),
+				"username", userName,
+//				"client_id", "demo-client",
+				"token_type", "Bearer",
+				"authorities", authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(","))
+		);
+
 		Claims claims = Jwts.claims()
-				.subject(userName)
-				.add(Map.of("authorities", authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(","))))
+//				.subject(userName)
+				.add(claimsProperties)
 				.build();
 
 		Date from = Date.from(Instant.now());
@@ -105,4 +151,22 @@ public class JwtUtils {
 		}
 		return false;
 	}
+
+	private static final Pattern JWT_PATTERN = Pattern.compile("^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_.+/=]*$");
+
+	public static boolean isJwt(String token) {
+		return JWT_PATTERN.matcher(token).matches();
+	}
+
+//	public Map<String, Object> getClaimsFromToken(final @NotNull String token) {
+//		Claims claims = Jwts.parser()
+//				.setSigningKey(getSingingKey())
+//				.build()
+//				.parseClaimsJws(token)
+//				.getBody();
+//		return Map.of(
+//				"username", claims.getSubject(),
+//				"authorities", )
+//		);
+//	}
 }

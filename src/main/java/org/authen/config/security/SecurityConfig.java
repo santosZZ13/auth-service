@@ -1,19 +1,18 @@
 package org.authen.config.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.authen.config.security.handler.AfterAuthenticationSuccessHandler;
 import org.authen.config.security.handler.AfterOauth2FailureHandler;
 import org.authen.config.security.handler.AfterOauth2SuccessHandler;
 import org.authen.config.security.filter.GenericResponseFilter;
+import org.authen.config.security.jwt.JwtOpaqueTokenIntrospector;
 import org.authen.config.security.properties.BasicAuthProperties;
 import org.authen.config.security.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 //import org.authen.service.user.OAuth2UserServiceImpl;
 import org.authen.filter.JwtAuthFilter;
 import org.authen.jwt.JwtTokenService;
 import org.authen.service.user.OAuth2UserServiceImpl;
-import org.authen.service.user.UserService;
 import org.authen.service.user.UserServiceImpl;
 import org.authen.exception.UserAuthenticationErrorHandler;
 import org.jetbrains.annotations.NotNull;
@@ -29,11 +28,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -136,10 +135,8 @@ public class SecurityConfig {
 
 		http.oauth2ResourceServer(auth -> {
 			auth.opaqueToken(
-					opaqueTokenConfigurer -> opaqueTokenConfigurer
-							.introspectionUri("http://localhost:8081/oauth2/introspect")
-							.introspectionClientCredentials("demo-client", "demo-secret")
-			);
+					opaqueTokenConfigurer -> opaqueTokenConfigurer.introspector(opaqueTokenIntrospector()
+			));
 		});
 
 
@@ -149,6 +146,11 @@ public class SecurityConfig {
 		return http.build();
 	}
 
+
+	@Bean
+	public OpaqueTokenIntrospector opaqueTokenIntrospector() {
+		return new JwtOpaqueTokenIntrospector();
+	}
 
 	/**
 	 * By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save

@@ -6,7 +6,7 @@ import org.authen.config.security.repository.HttpCookieOAuth2AuthorizationReques
 import org.authen.exception.BadRequestException;
 import org.authen.jwt.JwtTokenService;
 import org.authen.util.cookie.CookieUtils;
-import org.authen.util.jwt.JwtUtils;
+import org.authen.config.security.jwt.JwtUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
