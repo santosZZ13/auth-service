@@ -1,14 +1,18 @@
 package org.authen.config.security.jwt;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.OAuth2TokenIntrospectionClaimNames;
+import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 
 public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
-
+	private static final String AUTHORITY_PREFIX = "SCOPE_";
 	private final String INTROSPECTION_URI = "http://localhost:8081/oauth2/introspect";
 	private final String CLIENT_ID = "demo-client";
 	private final String CLIENT_SECRET = "demo-secret";
@@ -31,7 +35,17 @@ public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 	}
 
 	public OAuth2AuthenticatedPrincipal convertClaimsSet(Map<String, Object> claims) {
-//		return new OAuth2IntrospectionAuthenticatedPrincipal(claims, authorities);
-		return null;
+		Collection<GrantedAuthority> authorities = new ArrayList<>();
+		claims.computeIfPresent(OAuth2TokenIntrospectionClaimNames.SCOPE, (k, v) -> {
+			if (v instanceof String) {
+				Collection<String> scopes = Arrays.asList(((String) v).split(" "));
+				for (String scope : scopes) {
+					authorities.add(new SimpleGrantedAuthority(AUTHORITY_PREFIX + scope));
+				}
+				return scopes;
+			}
+			return v;
+		});
+		return new OAuth2IntrospectionAuthenticatedPrincipal(claims, authorities);
 	}
 }
