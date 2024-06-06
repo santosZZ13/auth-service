@@ -1,5 +1,6 @@
 package org.authen.config.security.jwt;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -10,7 +11,7 @@ import org.springframework.security.oauth2.server.resource.introspection.SpringO
 
 import java.util.*;
 
-
+@AllArgsConstructor
 public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 	private static final String AUTHORITY_PREFIX = "SCOPE_";
 	private final String INTROSPECTION_URI = "http://localhost:8081/oauth2/introspect";
@@ -19,12 +20,13 @@ public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 	private final SpringOpaqueTokenIntrospector springOpaqueTokenIntrospector = new SpringOpaqueTokenIntrospector(
 			INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET);
 
+	private final JwtUtils jwtUtils;
 
 	@Override
 	public OAuth2AuthenticatedPrincipal introspect(String token) {
 		OAuth2AuthenticatedPrincipal introspect;
 		try {
-			Map<String, Object> claims = new HashMap<>();
+			Map<String, Object> claims = jwtUtils.getClaimsFromToken(token);
 			introspect = convertClaimsSet(claims);
 			return introspect;
 		} catch (Exception e) {

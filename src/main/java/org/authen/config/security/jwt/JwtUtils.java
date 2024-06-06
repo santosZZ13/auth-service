@@ -162,15 +162,11 @@ public class JwtUtils {
 		return null;
 	}
 
-//	public Map<String, Object> getClaimsFromToken(final @NotNull String token) {
-//		Claims claims = Jwts.parser()
-//				.setSigningKey(getSingingKey())
-//				.build()
-//				.parseClaimsJws(token)
-//				.getBody();
-//		return Map.of(
-//				"username", claims.getSubject(),
-//				"authorities", )
-//		);
-//	}
+	public Map<String, Object> getClaimsFromToken(final @NotNull String token) {
+		return Jwts.parser()
+				.setSigningKey(getSingingKey())
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
+	}
 }

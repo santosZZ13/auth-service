@@ -7,6 +7,7 @@ import org.authen.config.security.handler.AfterOauth2FailureHandler;
 import org.authen.config.security.handler.AfterOauth2SuccessHandler;
 import org.authen.config.security.filter.GenericResponseFilter;
 import org.authen.config.security.jwt.JwtOpaqueTokenIntrospector;
+import org.authen.config.security.jwt.JwtUtils;
 import org.authen.config.security.properties.BasicAuthProperties;
 import org.authen.config.security.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 //import org.authen.service.user.OAuth2UserServiceImpl;
@@ -97,7 +98,8 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityWebFilterChain(@NotNull HttpSecurity http,
-													  JwtAuthFilter jwtAuthFilter) throws Exception {
+													  JwtAuthFilter jwtAuthFilter,
+													  JwtUtils jwtUtils) throws Exception {
 		http
 				.csrf().disable()
 				.formLogin().disable()
@@ -134,7 +136,7 @@ public class SecurityConfig {
 
 		http.oauth2ResourceServer(auth -> {
 			auth.opaqueToken(
-					opaqueTokenConfigurer -> opaqueTokenConfigurer.introspector(opaqueTokenIntrospector()
+					opaqueTokenConfigurer -> opaqueTokenConfigurer.introspector(opaqueTokenIntrospector(jwtUtils)
 			));
 		});
 
@@ -147,8 +149,8 @@ public class SecurityConfig {
 
 
 	@Bean
-	public OpaqueTokenIntrospector opaqueTokenIntrospector() {
-		return new JwtOpaqueTokenIntrospector();
+	public OpaqueTokenIntrospector opaqueTokenIntrospector(JwtUtils jwtUtils) {
+		return new JwtOpaqueTokenIntrospector(jwtUtils);
 	}
 
 	/**
