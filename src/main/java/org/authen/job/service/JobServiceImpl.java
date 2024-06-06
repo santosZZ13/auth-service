@@ -1,6 +1,6 @@
 package org.authen.job.service;
 
-import org.authen.config.CustomTaskScheduler;
+import org.authen.configuration.CustomTaskScheduler;
 import org.authen.wapper.model.GenericResponseSuccessWrapper;
 import org.authen.job.model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
