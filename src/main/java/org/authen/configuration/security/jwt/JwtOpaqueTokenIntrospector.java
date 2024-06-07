@@ -19,7 +19,7 @@ public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 	private final String INTROSPECTION_URI = "http://localhost:8081/oauth2/introspect";
 	private final String CLIENT_ID = "demo-client";
 	private final String CLIENT_SECRET = "demo-secret";
-	private final SpringOpaqueTokenIntrospector springOpaqueTokenIntrospector = new SpringOpaqueTokenIntrospector(
+	private final SpringOpaqueTokenIntrospector delegate = new SpringOpaqueTokenIntrospector(
 			INTROSPECTION_URI, CLIENT_ID, CLIENT_SECRET);
 
 	private final JwtUtils jwtUtils;
@@ -33,7 +33,7 @@ public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 			return introspect;
 		} catch (Exception ignored) {
 		}
-		introspect = this.springOpaqueTokenIntrospector.introspect(token);
+		introspect = this.delegate.introspect(token);
 		return introspect;
 	}
 

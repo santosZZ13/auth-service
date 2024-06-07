@@ -126,7 +126,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		try {
 			token = bearerTokenResolver.resolve(request);
 		} catch (OAuth2AuthenticationException invalid) {
-			this.logger.trace("Sending to authentication entry point since failed to resolve bearer token", invalid);
+			this.logger.info("###JwtAuthFilter - Sending to authentication entry point since failed to resolve bearer token", invalid);
 			authenticationEntryPoint.commence(request, response, invalid);
 			return;
 

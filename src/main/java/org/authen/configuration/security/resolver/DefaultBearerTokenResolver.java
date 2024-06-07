@@ -1,6 +1,7 @@
 package org.authen.configuration.security.resolver;
 
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -72,7 +73,7 @@ public class DefaultBearerTokenResolver implements BearerTokenResolver {
 		return matcher.group("token");
 	}
 
-	private static String resolveFromRequestParameters(HttpServletRequest request) {
+	private static @Nullable String resolveFromRequestParameters(@NotNull HttpServletRequest request) {
 		String[] values = request.getParameterValues("access_token");
 		if (values == null || values.length == 0) {
 			return null;
@@ -84,13 +85,13 @@ public class DefaultBearerTokenResolver implements BearerTokenResolver {
 		throw new OAuth2AuthenticationException(error);
 	}
 
-	private boolean isParameterTokenSupportedForRequest(final HttpServletRequest request) {
+	private boolean isParameterTokenSupportedForRequest(final @NotNull HttpServletRequest request) {
 		return (("POST".equals(request.getMethod())
 				&& MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(request.getContentType()))
 				|| "GET".equals(request.getMethod()));
 	}
 
-	private boolean isParameterTokenEnabledForRequest(final HttpServletRequest request) {
+	private boolean isParameterTokenEnabledForRequest(final @NotNull HttpServletRequest request) {
 		return ((this.allowFormEncodedBodyParameter && "POST".equals(request.getMethod())
 				&& MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(request.getContentType()))
 				|| (this.allowUriQueryParameter && "GET".equals(request.getMethod())));
