@@ -1,5 +1,6 @@
 package org.authen.configuration.security.jwt;
 
+import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OAuth2I
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
 
+import java.time.Instant;
 import java.util.*;
 
 @AllArgsConstructor
@@ -26,11 +28,10 @@ public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 	public OAuth2AuthenticatedPrincipal introspect(String token) {
 		OAuth2AuthenticatedPrincipal introspect;
 		try {
-			Map<String, Object> claims = jwtUtils.getClaimsFromToken(token);
-			introspect = convertClaimsSet(claims);
+			Map<String, Object> claimsFromToken = jwtUtils.createJwtTokenWithModifiedClaims(token);
+			introspect = convertClaimsSet(claimsFromToken);
 			return introspect;
 		} catch (Exception ignored) {
-
 		}
 		introspect = this.springOpaqueTokenIntrospector.introspect(token);
 		return introspect;
@@ -48,6 +49,11 @@ public class JwtOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 			}
 			return v;
 		});
+		claims.computeIfPresent(TokenClaimNames.EXP,
+				(k, v) -> Instant.ofEpochSecond(((Number) v).longValue()));
+		claims.computeIfPresent(TokenClaimNames.IAT,
+				(k, v) -> Instant.ofEpochSecond(((Number) v).longValue()));
+		claims.computeIfPresent(TokenClaimNames.ISS, (k, v) -> v.toString());
 		return new OAuth2IntrospectionAuthenticatedPrincipal(claims, authorities);
 	}
 }

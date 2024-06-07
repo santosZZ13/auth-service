@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -168,5 +169,10 @@ public class JwtUtils {
 				.build()
 				.parseClaimsJws(token)
 				.getBody();
+	}
+
+
+	public Map<String, Object> createJwtTokenWithModifiedClaims(final String token) {
+		return new HashMap<>(this.getClaimsFromToken(token));
 	}
 }
